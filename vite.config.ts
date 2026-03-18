@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import https from 'node:https'
 
 export default defineConfig({
+  base: '/diapason/',
   plugins: [
     react(),
     tailwindcss(),
@@ -12,7 +13,11 @@ export default defineConfig({
       configureServer(server) {
         server.middlewares.use('/proxy', (req, res) => {
           const match = req.url?.match(/^\/([^/]+)(\/.*)$/)
-          if (!match) { res.statusCode = 400; res.end('Invalid proxy URL'); return }
+          if (!match) {
+            res.statusCode = 400
+            res.end('Invalid proxy URL')
+            return
+          }
 
           const [, domain, path] = match
           const options = {
@@ -27,7 +32,10 @@ export default defineConfig({
             response.pipe(res)
           })
 
-          request.on('error', () => { res.statusCode = 502; res.end('Proxy error') })
+          request.on('error', () => {
+            res.statusCode = 502
+            res.end('Proxy error')
+          })
           request.end()
         })
       },

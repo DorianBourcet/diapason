@@ -1,4 +1,5 @@
 import type { Station, TrackMetadata } from '../types'
+import { proxyUrl } from '../utils/proxyUrl'
 
 const STATION_SLUGS: Record<string, string> = {
   fip: 'fip',
@@ -14,7 +15,7 @@ export async function fetchMetadata(station: Station): Promise<TrackMetadata> {
     throw new Error(`Station Radio France inconnue : ${station.adapterConfig.stationId}`)
   }
 
-  const response = await fetch(`/proxy/www.radiofrance.fr/${slug}/api/live`)
+  const response = await fetch(proxyUrl(`https://www.radiofrance.fr/${slug}/api/live`))
 
   if (!response.ok) {
     throw new Error(`Erreur API Radio France : ${response.status}`)

@@ -1,9 +1,8 @@
 import type { Station, TrackMetadata } from '../types'
+import { proxyUrl } from '../utils/proxyUrl'
 
 export async function fetchMetadata(_station: Station): Promise<TrackMetadata> {
-  const response = await fetch('/proxy/www.tsfjazz.com/player/qect', {
-    method: 'POST',
-  })
+  const response = await fetch(proxyUrl('https://www.tsfjazz.com/player/qect'), { method: 'POST' })
 
   if (!response.ok) {
     throw new Error(`Erreur API TSF Jazz : ${response.status}`)

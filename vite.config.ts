@@ -12,17 +12,17 @@ export default defineConfig({
       name: 'generic-proxy',
       configureServer(server) {
         server.middlewares.use('/proxy', (req, res) => {
-          const match = req.url?.match(/^\/([^/]+)(\/.*)$/)
+          const match = req.url?.match(/^\/([^/]+)(\/[^?]*)(\?.*)?$/)
           if (!match) {
             res.statusCode = 400
             res.end('Invalid proxy URL')
             return
           }
 
-          const [, domain, path] = match
+          const [, domain, pathname, search = ''] = match
           const options = {
             hostname: domain,
-            path,
+            path: `${pathname}${search}`,
             method: req.method,
             headers: { 'Content-Type': 'application/json' },
           }

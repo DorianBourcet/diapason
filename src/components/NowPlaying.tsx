@@ -4,9 +4,9 @@ import { VinylPlaceholder } from './VinylPlaceholder'
 import { AntennaPlaceholder } from './AntennaPlaceholder'
 
 export function NowPlaying() {
-  const { currentTrack, isPlaying } = usePlayerStore()
+  const { currentTrack, status } = usePlayerStore()
 
-  if (!currentTrack || !isPlaying)
+  if (!currentTrack || status !== 'playing')
     return (
       <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8">
         <div className="w-80 h-80 opacity-30">
@@ -44,9 +44,9 @@ export function NowPlaying() {
 }
 
 export function NowPlayingProgress() {
-  const { currentTrack, isPlaying } = usePlayerStore()
+  const { currentTrack, status } = usePlayerStore()
 
-  if (!currentTrack || !isPlaying || !currentTrack.startedAt || !currentTrack.duration) {
+  if (!currentTrack || status !== 'playing' || !currentTrack.startedAt || !currentTrack.duration) {
     return <div className="h-px bg-white/5 w-full" />
   }
 

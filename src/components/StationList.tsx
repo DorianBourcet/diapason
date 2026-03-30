@@ -2,19 +2,12 @@ import { stations } from '../data/stations'
 import { usePlayerStore } from '../store/playerStore'
 
 export function StationList() {
-  const { currentStation, setCurrentStation, setIsPlaying } = usePlayerStore()
+  const { currentStation, selectStation } = usePlayerStore()
 
   function handleSelect(stationId: string) {
     const station = stations.find((s) => s.id === stationId)
     if (!station) return
-
-    if (currentStation?.id === stationId) {
-      setIsPlaying(true)
-      return
-    }
-
-    setCurrentStation(station)
-    setIsPlaying(true)
+    selectStation(station)
   }
 
   return (

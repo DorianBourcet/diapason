@@ -15,9 +15,11 @@ export interface TrackMetadata {
   duration?: number
 }
 
+export type PlaybackStatus = 'playing' | 'paused' | 'stopped'
+
 export interface PlayerState {
   currentStation: Station | null
   currentTrack: TrackMetadata | null
-  isPlaying: boolean
+  status: PlaybackStatus
   volume: number
 }

@@ -30,11 +30,11 @@ function getNextPollDelay(track: TrackMetadata): number {
 }
 
 export function useNowPlaying() {
-  const { currentStation, isPlaying, setCurrentTrack } = usePlayerStore()
+  const { currentStation, status, setCurrentTrack } = usePlayerStore()
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    if (!currentStation || !isPlaying) {
+    if (!currentStation || status !== 'playing') {
       setCurrentTrack(null)
       return
     }
@@ -59,5 +59,5 @@ export function useNowPlaying() {
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [currentStation, isPlaying, setCurrentTrack])
+  }, [currentStation, status, setCurrentTrack])
 }

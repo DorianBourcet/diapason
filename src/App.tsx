@@ -1,11 +1,9 @@
-import { useAudio } from './hooks/useAudio'
 import { useNowPlaying } from './hooks/useNowPlaying'
 import { StationList } from './components/StationList'
 import { Player } from './components/Player'
 import { NowPlaying, NowPlayingProgress } from './components/NowPlaying'
 
 export default function App() {
-  useAudio()
   useNowPlaying()
 
   return (

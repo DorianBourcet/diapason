@@ -1,14 +1,16 @@
 import { usePlayerStore } from '../store/playerStore'
 import { PlayStopButton } from './PlayStopButton'
+import { AudioPlayer } from './AudioPlayer'
+import type { ChangeEvent, KeyboardEvent } from 'react'
 
 export function Player() {
-  const { currentStation, volume, setVolume } = usePlayerStore()
+  const { currentStation, volume, setVolume, status } = usePlayerStore()
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setVolume(parseFloat(e.target.value) * 100)
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'ArrowLeft') {
       const newVolume = Math.ceil(volume / 10) * 10 - 10
       setVolume(Math.max(0, newVolume))
@@ -43,6 +45,7 @@ export function Player() {
           className="w-20 accent-white/60 cursor-pointer"
         />
       </div>
+      {currentStation && status !== 'stopped' && <AudioPlayer />}
     </div>
   )
 }

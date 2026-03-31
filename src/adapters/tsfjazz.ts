@@ -5,14 +5,14 @@ export async function fetchMetadata(_station: Station): Promise<TrackMetadata> {
   const response = await fetch(proxyUrl('https://www.tsfjazz.com/player/qect'), { method: 'POST' })
 
   if (!response.ok) {
-    throw new Error(`Erreur API TSF Jazz : ${response.status}`)
+    throw new Error(`TSF Jazz API error: ${response.status}`)
   }
 
   const data = await response.json()
   const current = data.current
 
   if (!current) {
-    throw new Error('Aucun titre en cours')
+    throw new Error('No track currently playing')
   }
 
   return {

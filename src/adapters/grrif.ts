@@ -5,13 +5,13 @@ export async function fetchMetadata(_station: Station): Promise<TrackMetadata> {
   const response = await fetch(proxyUrl('https://www.grrif.ch/live/covers.json'))
 
   if (!response.ok) {
-    throw new Error(`Erreur API GRRIF : ${response.status}`)
+    throw new Error(`GRRIF API error: ${response.status}`)
   }
 
   const data = await response.json()
 
   if (!Array.isArray(data) || data.length === 0) {
-    throw new Error('Aucun titre en cours')
+    throw new Error('No track currently playing')
   }
 
   const current = data[data.length - 1]

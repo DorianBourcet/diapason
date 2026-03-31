@@ -10,7 +10,7 @@ export async function fetchMetadata(station: Station): Promise<TrackMetadata> {
   const payload = STATION_PAYLOADS[station.adapterConfig.stationId]
 
   if (payload === undefined) {
-    throw new Error(`Station Radio France inconnue : ${station.adapterConfig.stationId}`)
+    throw new Error(`Unknown Radio France station: ${station.adapterConfig.stationId}`)
   }
 
   const response = await fetch(
@@ -18,7 +18,7 @@ export async function fetchMetadata(station: Station): Promise<TrackMetadata> {
   )
 
   if (!response.ok) {
-    throw new Error(`Erreur API Radio France : ${response.status}`)
+    throw new Error(`Radio France API error: ${response.status}`)
   }
 
   const data = await response.json()

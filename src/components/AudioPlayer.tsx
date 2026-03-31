@@ -55,9 +55,9 @@ export function AudioPlayer() {
     navigator.mediaSession.setActionHandler('play', () => setStatus('playing'))
     navigator.mediaSession.setActionHandler('pause', () => setStatus('paused'))
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: currentTrack?.title || currentStation?.name,
+      title: currentTrack?.title,
       artist: currentTrack?.artist,
-      album: currentTrack?.album,
+      album: currentStation?.name,
       ...(currentTrack?.coverUrl && {
         artwork: [{ src: currentTrack.coverUrl }],
       }),

@@ -20,7 +20,7 @@ export function StationList() {
               onClick={() => handleSelect(station.id)}
               aria-pressed={isActive}
               className={`
-                w-full text-left px-3 py-2.5 rounded-md text-sm transition-colors
+                w-full text-left px-3 py-2.5 rounded-md text-sm transition-colors cursor-pointer
                 relative flex items-center gap-3
                 ${
                   isActive

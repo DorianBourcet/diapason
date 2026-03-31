@@ -5,6 +5,11 @@ import { AntennaPlaceholder } from './AntennaPlaceholder'
 
 export function NowPlaying() {
   const { currentTrack, status } = usePlayerStore()
+  const [imageLoadError, setImageLoadError] = useState(false)
+
+  useEffect(() => {
+    setImageLoadError(false)
+  }, [currentTrack])
 
   if (!currentTrack || status !== 'playing')
     return (
@@ -19,12 +24,14 @@ export function NowPlaying() {
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8">
       {/* Pochette */}
-      <div className="w-80 h-80 rounded shadow-2xl overflow-hidden bg-white/[0.03]">
-        {currentTrack.coverUrl ? (
+      <div className="w-80 h-80 rounded-lg shadow-2xl overflow-hidden bg-white/[0.03]">
+        {currentTrack.coverUrl && !imageLoadError ? (
           <img
             src={currentTrack.coverUrl}
             alt={`Pochette de ${currentTrack.title}`}
             className="w-full h-full object-cover"
+            onError={() => setImageLoadError(true)}
+            onLoad={() => setImageLoadError(false)}
           />
         ) : (
           <VinylPlaceholder />
@@ -33,9 +40,7 @@ export function NowPlaying() {
 
       {/* Infos */}
       <div className="flex flex-col items-center gap-1 text-center">
-        <p className="text-white font-light text-lg leading-snug capitalize">
-          {currentTrack.title}
-        </p>
+        <p className="text-white font-light text-lg leading-snug lowercase">{currentTrack.title}</p>
         <p className="text-white/40 text-xs tracking-widest uppercase">{currentTrack.artist}</p>
         {currentTrack.album && <p className="text-white/20 text-xs mt-1">{currentTrack.album}</p>}
       </div>

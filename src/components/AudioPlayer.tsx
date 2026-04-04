@@ -3,7 +3,7 @@ import { usePlayerStore } from '../store/playerStore'
 
 export function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null)
-  const { currentStation, currentTrack, status, setStatus, volume } = usePlayerStore()
+  const { currentStation, currentTrack, status, setStatus, volume, muted } = usePlayerStore()
 
   // Set audio source when current station changes
   useEffect(() => {
@@ -28,7 +28,7 @@ export function AudioPlayer() {
     }
   }, [currentStation, setStatus, status])
 
-  // Controls play/pause based on status (station changes excluded)
+  // Controls play/pause based on status
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
@@ -80,11 +80,11 @@ export function AudioPlayer() {
     }
   }, [setStatus, currentTrack, currentStation])
 
-  // Handle volume change
+  // Handle volume and mute
   useEffect(() => {
     if (!audioRef.current) return
-    audioRef.current.volume = volume / 100
-  }, [volume])
+    audioRef.current.volume = muted ? 0 : volume / 100
+  }, [volume, muted])
 
   return <audio ref={audioRef} />
 }

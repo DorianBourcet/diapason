@@ -1,13 +1,18 @@
 import { stations } from '../data/stations'
 import { usePlayerStore } from '../store/playerStore'
 
-export function StationList() {
+interface StationListProps {
+  onSelect?: () => void
+}
+
+export function StationList({ onSelect }: StationListProps) {
   const { currentStation, selectStation } = usePlayerStore()
 
   function handleSelect(stationId: string) {
     const station = stations.find((s) => s.id === stationId)
     if (!station) return
     selectStation(station)
+    onSelect?.()
   }
 
   return (

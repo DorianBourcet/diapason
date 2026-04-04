@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { usePlayerStore } from '../store/playerStore'
 import { VinylPlaceholder } from './VinylPlaceholder'
 import { AntennaPlaceholder } from './AntennaPlaceholder'
+import { MarqueeText } from './MarqueeText'
 
 export function NowPlaying() {
   const { currentTrack, status } = usePlayerStore()
@@ -11,10 +12,12 @@ export function NowPlaying() {
     setImageLoadError(false)
   }, [currentTrack])
 
+  const coverSize = { width: 'min(320px, 50vh)', height: 'min(320px, 50vh)' }
+
   if (!currentTrack || status !== 'playing')
     return (
-      <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8">
-        <div className="w-80 h-80 opacity-30">
+      <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8 min-h-0">
+        <div className="opacity-30" style={coverSize}>
           <AntennaPlaceholder />
         </div>
         <p className="text-xs text-white/20 tracking-widest">SÉLECTIONNER UNE STATION</p>
@@ -22,9 +25,12 @@ export function NowPlaying() {
     )
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8">
+    <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8 min-h-0">
       {/* Pochette */}
-      <div className="w-80 h-80 rounded-lg shadow-2xl overflow-hidden bg-white/[0.03]">
+      <div
+        className="rounded-lg shadow-2xl overflow-hidden bg-white/[0.03] shrink-0"
+        style={coverSize}
+      >
         {currentTrack.coverUrl && !imageLoadError ? (
           <img
             src={currentTrack.coverUrl}
@@ -38,11 +44,22 @@ export function NowPlaying() {
         )}
       </div>
 
-      {/* Infos */}
-      <div className="flex flex-col items-center gap-1 text-center">
-        <p className="text-white font-light text-lg leading-snug lowercase">{currentTrack.title}</p>
-        <p className="text-white/40 text-xs tracking-widest uppercase">{currentTrack.artist}</p>
-        {currentTrack.album && <p className="text-white/20 text-xs mt-1">{currentTrack.album}</p>}
+      {/* Info */}
+      <div className="flex flex-col items-center gap-1 w-full overflow-hidden min-h-20">
+        <MarqueeText
+          text={currentTrack.title ?? ''}
+          className="text-white font-light text-lg leading-snug lowercase w-full text-center"
+        />
+        <MarqueeText
+          text={currentTrack.artist ?? ''}
+          className="text-white/40 text-xs tracking-widest uppercase w-full text-center"
+        />
+        {currentTrack.album && (
+          <MarqueeText
+            text={currentTrack.album}
+            className="text-white/20 text-xs mt-1 w-full text-center"
+          />
+        )}
       </div>
     </div>
   )

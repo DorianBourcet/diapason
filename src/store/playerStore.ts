@@ -9,29 +9,39 @@ interface PlayerActions {
   setCurrentTrack: (track: TrackMetadata | null) => void
   setStatus: (status: PlaybackStatus) => void
   setVolume: (volume: number) => void
+  toggleMute: () => void
   selectStation: (station: Station) => void
   getCachedMetadata: (stationId: string) => TrackMetadata | undefined
   setCachedMetadata: (stationId: string, track: TrackMetadata) => void
   clearCachedMetadata: (stationId?: string) => void
 }
 
-type PlayerStore = PlayerState & PlayerActions
+type PlayerStore = PlayerState & { muted: boolean; previousVolume: number } & PlayerActions
 
-export const usePlayerStore = create<PlayerStore>((set) => ({
+export const usePlayerStore = create<PlayerStore>((set, get) => ({
   currentStation: null,
   currentTrack: null,
   status: 'stopped',
   volume: 100,
+  muted: false,
+  previousVolume: 100,
 
   setCurrentStation: (station) => set({ currentStation: station }),
   setCurrentTrack: (track) => set({ currentTrack: track }),
   setStatus: (status) => set({ status }),
-  setVolume: (volume) => {
-    set({ volume })
+  setVolume: (volume) => set({ volume, muted: volume === 0 }),
+  toggleMute: () => {
+    const { muted, volume, previousVolume } = get()
+    if (muted) {
+      // Restore previous volume (minimum 10 to avoid staying at 0)
+      set({ muted: false, volume: previousVolume > 0 ? previousVolume : 50 })
+    } else {
+      set({ muted: true, previousVolume: volume })
+    }
   },
+
   selectStation: (station: Station) => set({ currentStation: station, status: 'playing' }),
 
-  // Cache accessors operate on the module-scoped Map (no reactive state)
   getCachedMetadata: (stationId: string) => {
     const val = metadataCache.get(stationId)
     if (val) {
@@ -47,7 +57,6 @@ export const usePlayerStore = create<PlayerStore>((set) => ({
   setCachedMetadata: (stationId: string, track: TrackMetadata) => {
     metadataCache.set(stationId, track)
     try {
-      // helpful debug info in browser console during development
       // eslint-disable-next-line no-console
       console.debug(`[metadata-cache] set ${stationId}`, track)
     } catch (e) {
@@ -60,7 +69,6 @@ export const usePlayerStore = create<PlayerStore>((set) => ({
   },
 }))
 
-// Lightweight helper for debugging: inspect cache contents
 export function getAllCachedMetadata(): Record<string, TrackMetadata> {
   const out: Record<string, TrackMetadata> = {}
   for (const [k, v] of metadataCache.entries()) out[k] = v

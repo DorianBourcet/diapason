@@ -11,7 +11,7 @@ export function PlayStopButton() {
     <button
       onClick={handlePlayStop}
       aria-label={status !== 'playing' ? 'Lecture' : 'Stop'}
-      className="w-8 h-8 rounded-full border enabled:border-white/10 flex items-center justify-center enabled:hover:border-white/30 cursor-pointer disabled:border-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      className="w-11 h-11 md:w-8 md:h-8 shrink-0 rounded-full border enabled:border-white/10 flex items-center justify-center enabled:hover:border-white/30 cursor-pointer disabled:border-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       disabled={!currentStation}
     >
       {status === 'playing' ? (

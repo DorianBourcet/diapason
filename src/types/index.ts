@@ -17,9 +17,12 @@ export interface TrackMetadata {
 
 export type PlaybackStatus = 'playing' | 'paused' | 'stopped'
 
+export type Theme = 'system' | 'light' | 'dark'
+
 export interface PlayerState {
   currentStation: Station | null
   currentTrack: TrackMetadata | null
   status: PlaybackStatus
   volume: number
+  theme: Theme
 }

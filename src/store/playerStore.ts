@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import type { Station, TrackMetadata, PlayerState, PlaybackStatus } from '../types'
+import { persist } from 'zustand/middleware'
+import type { Station, TrackMetadata, PlayerState, PlaybackStatus, Theme } from '../types'
 
 // Module-scoped cache for metadata keyed by station id
 const metadataCache = new Map<string, TrackMetadata>()
@@ -14,60 +15,72 @@ interface PlayerActions {
   getCachedMetadata: (stationId: string) => TrackMetadata | undefined
   setCachedMetadata: (stationId: string, track: TrackMetadata) => void
   clearCachedMetadata: (stationId?: string) => void
+  setTheme: (theme: Theme) => void
 }
 
 type PlayerStore = PlayerState & { muted: boolean; previousVolume: number } & PlayerActions
 
-export const usePlayerStore = create<PlayerStore>((set, get) => ({
-  currentStation: null,
-  currentTrack: null,
-  status: 'stopped',
-  volume: 100,
-  muted: false,
-  previousVolume: 100,
+export const usePlayerStore = create<PlayerStore>()(
+  persist(
+    (set, get) => ({
+      currentStation: null,
+      currentTrack: null,
+      status: 'stopped',
+      volume: 100,
+      muted: false,
+      previousVolume: 100,
+      theme: 'system' as Theme,
 
-  setCurrentStation: (station) => set({ currentStation: station }),
-  setCurrentTrack: (track) => set({ currentTrack: track }),
-  setStatus: (status) => set({ status }),
-  setVolume: (volume) => set({ volume, muted: volume === 0 }),
-  toggleMute: () => {
-    const { muted, volume, previousVolume } = get()
-    if (muted) {
-      // Restore previous volume (minimum 10 to avoid staying at 0)
-      set({ muted: false, volume: previousVolume > 0 ? previousVolume : 50 })
-    } else {
-      set({ muted: true, previousVolume: volume })
-    }
-  },
+      setCurrentStation: (station) => set({ currentStation: station }),
+      setCurrentTrack: (track) => set({ currentTrack: track }),
+      setStatus: (status) => set({ status }),
+      setVolume: (volume) => set({ volume, muted: volume === 0 }),
+      toggleMute: () => {
+        const { muted, volume, previousVolume } = get()
+        if (muted) {
+          // Restore previous volume (minimum 10 to avoid staying at 0)
+          set({ muted: false, volume: previousVolume > 0 ? previousVolume : 50 })
+        } else {
+          set({ muted: true, previousVolume: volume })
+        }
+      },
 
-  selectStation: (station: Station) => set({ currentStation: station, status: 'playing' }),
+      setTheme: (theme: Theme) => set({ theme }),
 
-  getCachedMetadata: (stationId: string) => {
-    const val = metadataCache.get(stationId)
-    if (val) {
-      try {
-        // eslint-disable-next-line no-console
-        console.debug(`[metadata-cache] hit ${stationId}`, val)
-      } catch (e) {
-        // ignore
-      }
+      selectStation: (station: Station) => set({ currentStation: station, status: 'playing' }),
+
+      getCachedMetadata: (stationId: string) => {
+        const val = metadataCache.get(stationId)
+        if (val) {
+          try {
+            // eslint-disable-next-line no-console
+            console.debug(`[metadata-cache] hit ${stationId}`, val)
+          } catch (e) {
+            // ignore
+          }
+        }
+        return val
+      },
+      setCachedMetadata: (stationId: string, track: TrackMetadata) => {
+        metadataCache.set(stationId, track)
+        try {
+          // eslint-disable-next-line no-console
+          console.debug(`[metadata-cache] set ${stationId}`, track)
+        } catch (e) {
+          // ignore
+        }
+      },
+      clearCachedMetadata: (stationId?: string) => {
+        if (stationId) metadataCache.delete(stationId)
+        else metadataCache.clear()
+      },
+    }),
+    {
+      name: 'diapason-store',
+      partialize: (state) => ({ theme: state.theme }),
     }
-    return val
-  },
-  setCachedMetadata: (stationId: string, track: TrackMetadata) => {
-    metadataCache.set(stationId, track)
-    try {
-      // eslint-disable-next-line no-console
-      console.debug(`[metadata-cache] set ${stationId}`, track)
-    } catch (e) {
-      // ignore
-    }
-  },
-  clearCachedMetadata: (stationId?: string) => {
-    if (stationId) metadataCache.delete(stationId)
-    else metadataCache.clear()
-  },
-}))
+  ),
+)
 
 export function getAllCachedMetadata(): Record<string, TrackMetadata> {
   const out: Record<string, TrackMetadata> = {}

@@ -27,15 +27,14 @@ export function StationList({ onSelect }: StationListProps) {
               className={`
                 w-full text-left px-3 py-2.5 rounded-md text-sm transition-colors cursor-pointer
                 relative flex items-center gap-3
-                ${
-                  isActive
-                    ? 'text-white'
-                    : 'text-white/30 hover:text-white/60 hover:bg-white/[0.03]'
+                ${isActive
+                  ? 'text-text'
+                  : 'text-text-muted hover:text-text hover:bg-accent-muted'
                 }
               `}
             >
               {isActive && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-white rounded-full" />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-accent rounded-full" />
               )}
               {station.name}
             </button>

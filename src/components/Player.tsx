@@ -9,7 +9,7 @@ export function Player() {
   return (
     <div className="flex items-center justify-between px-6 h-14">
       {/* Station active */}
-      <span className="text-xs text-white/30 tracking-widest w-32 truncate">
+      <span className="text-xs text-text-muted tracking-widest w-32 truncate">
         {currentStation?.name ?? ''}
       </span>
 

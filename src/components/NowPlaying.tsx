@@ -20,7 +20,7 @@ export function NowPlaying() {
         <div className="opacity-30" style={coverSize}>
           <AntennaPlaceholder />
         </div>
-        <p className="text-xs text-white/20 tracking-widest">SÉLECTIONNER UNE STATION</p>
+        <p className="text-xs text-text-muted tracking-widest">SÉLECTIONNER UNE STATION</p>
       </div>
     )
 
@@ -28,7 +28,7 @@ export function NowPlaying() {
     <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8 min-h-0">
       {/* Pochette */}
       <div
-        className="rounded-lg shadow-2xl overflow-hidden bg-white/[0.03] shrink-0"
+        className="rounded-lg shadow-2xl overflow-hidden bg-bg-elevated shrink-0"
         style={coverSize}
       >
         {currentTrack.coverUrl && !imageLoadError ? (
@@ -48,16 +48,16 @@ export function NowPlaying() {
       <div className="flex flex-col items-center gap-1 w-full overflow-hidden min-h-20">
         <MarqueeText
           text={currentTrack.title ?? ''}
-          className="text-white font-light text-lg leading-snug lowercase w-full text-center"
+          className="text-text font-light text-lg leading-snug lowercase w-full text-center"
         />
         <MarqueeText
           text={currentTrack.artist ?? ''}
-          className="text-white/40 text-xs tracking-widest uppercase w-full text-center"
+          className="text-text-muted text-xs tracking-widest uppercase w-full text-center"
         />
         {currentTrack.album && (
           <MarqueeText
             text={currentTrack.album}
-            className="text-white/20 text-xs mt-1 w-full text-center"
+            className="text-text-muted opacity-50 text-xs mt-1 w-full text-center"
           />
         )}
       </div>
@@ -69,7 +69,7 @@ export function NowPlayingProgress() {
   const { currentTrack, status } = usePlayerStore()
 
   if (!currentTrack || status !== 'playing' || !currentTrack.startedAt || !currentTrack.duration) {
-    return <div className="h-px bg-white/5 w-full" />
+    return <div className="h-px w-full bg-border" />
   }
 
   return <ProgressBar startedAt={currentTrack.startedAt} duration={currentTrack.duration} />
@@ -80,13 +80,13 @@ function ProgressBar({ startedAt, duration }: { startedAt: number; duration: num
 
   return (
     <div
-      className="w-full h-px bg-white/10 overflow-hidden"
+      className="w-full h-px bg-border overflow-hidden"
       role="progressbar"
       aria-valuenow={progress}
       aria-valuemin={0}
       aria-valuemax={100}
     >
-      <div className="h-full bg-white/40" style={{ width: `${progress}%` }} />
+      <div className="h-full bg-accent" style={{ width: `${progress}%` }} />
     </div>
   )
 }

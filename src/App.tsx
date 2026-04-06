@@ -39,7 +39,7 @@ export default function App() {
         <div className="overflow-y-auto min-h-0 pb-4 flex-1">
           <StationList />
         </div>
-        <div className="shrink-0 pb-6 pt-4 border-border">
+        <div className="shrink-0 pb-6 pt-4">
           <ThemeSelector />
         </div>
       </aside>
@@ -102,7 +102,7 @@ export default function App() {
             <StationList onSelect={() => setDrawerOpen(false)} />
           </div>
 
-          <div className="px-3 pb-8 mx-3 pt-4 border-border shrink-0">
+          <div className="px-3 pb-8 mx-3 pt-4 shrink-0">
             <ThemeSelector />
           </div>
         </div>

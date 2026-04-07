@@ -47,8 +47,10 @@ export const usePlayerStore = create<PlayerStore>()(
 
       setTheme: (theme: Theme) => set({ theme }),
 
-      selectStation: (station: Station) => set({ currentStation: station, status: 'playing' }),
-
+      selectStation: (station: Station) => {
+        if (get().status === 'playing' && station.id === get().currentStation?.id) return
+        set({ currentStation: station, status: 'loading' })
+      },
       getCachedMetadata: (stationId: string) => {
         const val = metadataCache.get(stationId)
         if (val) {
@@ -78,7 +80,7 @@ export const usePlayerStore = create<PlayerStore>()(
     {
       name: 'diapason-store',
       partialize: (state) => ({ theme: state.theme }),
-    }
+    },
   ),
 )
 

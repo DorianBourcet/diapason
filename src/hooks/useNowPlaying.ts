@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { usePlayerStore } from '../store/playerStore'
 import type { Station, TrackMetadata } from '../types'
 
@@ -33,41 +33,46 @@ export function useNowPlaying() {
   const { currentStation, status, setCurrentTrack, getCachedMetadata, setCachedMetadata } =
     usePlayerStore()
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const shouldPoll = ['playing', 'loading'].includes(status)
+
+  const poll = useCallback(async () => {
+    try {
+      // Check cache first
+      const cached = getCachedMetadata?.(currentStation!.id)
+      if (cached && cached.startedAt && cached.duration) {
+        const now = Date.now() / 1000
+        if (cached.startedAt + cached.duration > now) {
+          setCurrentTrack(cached)
+          const delay = getNextPollDelay(cached)
+          timeoutRef.current = setTimeout(poll, delay)
+          return
+        }
+      }
+
+      const track = normalizeTrack(await fetchMetadata(currentStation!))
+      if (track?.coverUrl) {
+        const img = new Image()
+        img.src = track.coverUrl
+      }
+      setCurrentTrack(track)
+
+      const now = Date.now() / 1000
+      if (track.startedAt && track.duration && track.startedAt + track.duration > now) {
+        setCachedMetadata?.(currentStation!.id, track)
+      }
+
+      const delay = getNextPollDelay(track)
+      timeoutRef.current = setTimeout(poll, delay)
+    } catch (error) {
+      console.error('Error fetching metadata:', error)
+      timeoutRef.current = setTimeout(poll, SIXTY_SECONDS_INTERVAL)
+    }
+  }, [currentStation, getCachedMetadata, setCachedMetadata, setCurrentTrack])
 
   useEffect(() => {
-    if (!currentStation || status !== 'playing') {
+    if (!shouldPoll) {
       setCurrentTrack(null)
       return
-    }
-
-    async function poll() {
-      try {
-        // Check cache first
-        const cached = getCachedMetadata?.(currentStation!.id)
-        if (cached && cached.startedAt && cached.duration) {
-          const now = Date.now() / 1000
-          if (cached.startedAt + cached.duration > now) {
-            setCurrentTrack(cached)
-            const delay = getNextPollDelay(cached)
-            timeoutRef.current = setTimeout(poll, delay)
-            return
-          }
-        }
-
-        const track = normalizeTrack(await fetchMetadata(currentStation!))
-        setCurrentTrack(track)
-
-        const now = Date.now() / 1000
-        if (track.startedAt && track.duration && track.startedAt + track.duration > now) {
-          setCachedMetadata?.(currentStation!.id, track)
-        }
-
-        const delay = getNextPollDelay(track)
-        timeoutRef.current = setTimeout(poll, delay)
-      } catch (error) {
-        console.error('Error fetching metadata:', error)
-        timeoutRef.current = setTimeout(poll, SIXTY_SECONDS_INTERVAL)
-      }
     }
 
     poll()
@@ -77,5 +82,5 @@ export function useNowPlaying() {
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [currentStation, status, setCurrentTrack, getCachedMetadata, setCachedMetadata])
+  }, [shouldPoll, poll, setCurrentTrack])
 }

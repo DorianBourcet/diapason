@@ -4,38 +4,34 @@ import { usePlayerStore } from '../store/playerStore'
 export function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null)
   const { currentStation, currentTrack, status, setStatus, volume, muted } = usePlayerStore()
+  const currentStreamUrl = currentStation?.streamUrl
 
-  // Set audio source when current station changes
-  useEffect(() => {
-    const audio = audioRef.current
-    if (!audio || !currentStation) return
-
-    let active = true
-
-    audio.src = currentStation.streamUrl
-    audio.load()
-
-    if (status === 'playing') {
-      audio.play().catch(() => {
-        if (active) setStatus('stopped')
-      })
-    }
-
-    return () => {
-      active = false
-      audio.pause()
-      audio.src = ''
-    }
-  }, [currentStation, setStatus, status])
-
-  // Controls play/pause based on status
+  // Sync audio element events → store status
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
 
+    const onPlaying = () => setStatus('playing')
+
+    audio.addEventListener('playing', onPlaying)
+
+    return () => {
+      audio.removeEventListener('playing', onPlaying)
+    }
+  }, [setStatus])
+
+  // Set audio source when current station changes
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || !currentStreamUrl) return
+
     let active = true
 
-    if (status === 'playing') {
+    if (audio.src !== currentStreamUrl) {
+      audio.src = currentStreamUrl
+      audio.load()
+    }
+    if (status === 'loading') {
       audio.play().catch(() => {
         if (active) setStatus('stopped')
       })
@@ -46,13 +42,13 @@ export function AudioPlayer() {
     return () => {
       active = false
     }
-  }, [status, setStatus])
+  }, [currentStreamUrl, setStatus, status])
 
   // Integrate with Media Session API
   useEffect(() => {
     if (!('mediaSession' in navigator)) return
 
-    navigator.mediaSession.setActionHandler('play', () => setStatus('playing'))
+    navigator.mediaSession.setActionHandler('play', () => setStatus('loading'))
     navigator.mediaSession.setActionHandler('pause', () => setStatus('paused'))
     navigator.mediaSession.metadata = new MediaMetadata({
       title: currentTrack?.title,

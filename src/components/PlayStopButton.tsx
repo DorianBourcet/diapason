@@ -4,7 +4,7 @@ export function PlayStopButton() {
   const { currentStation, status, setStatus } = usePlayerStore()
 
   function handlePlayStop() {
-    setStatus(status === 'playing' ? 'stopped' : 'playing')
+    setStatus(status === 'playing' ? 'stopped' : 'loading')
   }
 
   return (

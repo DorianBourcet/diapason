@@ -15,7 +15,7 @@ export interface TrackMetadata {
   duration?: number
 }
 
-export type PlaybackStatus = 'playing' | 'paused' | 'stopped'
+export type PlaybackStatus = 'playing' | 'paused' | 'stopped' | 'loading'
 
 export type Theme = 'system' | 'light' | 'dark'
 

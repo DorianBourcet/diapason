@@ -1,0 +1,1 @@
+import{p as r}from"./proxyUrl-CSkbmEGr.js";async function e(o){const a=await fetch(r("https://tracklist-api.kcrw.com/Music"));if(!a.ok)throw new Error(`KCRW API error: ${a.status}`);const t=await a.json();return{title:t.title??void 0,artist:t.artist??void 0,album:t.album??void 0,coverUrl:t.albumImageLarge??t.albumImage??void 0}}export{e as fetchMetadata};

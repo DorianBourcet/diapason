@@ -5,7 +5,7 @@
 - [x] Be mobile responsive
 - [x] Light/Dark theme
 - [/] Smooth transitions between covers
+- [x] Remember last listened radio
 - [ ] i18n
-- [ ] Remember last listened radio
 - [ ] Favorites
 - [ ] Handle bad connection and disconnection

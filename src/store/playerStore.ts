@@ -26,9 +26,9 @@ export const usePlayerStore = create<PlayerStore>()(
       currentStation: null,
       currentTrack: null,
       status: 'stopped',
-      volume: 100,
+      volume: 50,
       muted: false,
-      previousVolume: 100,
+      previousVolume: 50,
       theme: 'system' as Theme,
 
       setCurrentStation: (station) => set({ currentStation: station }),
@@ -79,7 +79,11 @@ export const usePlayerStore = create<PlayerStore>()(
     }),
     {
       name: 'diapason-store',
-      partialize: (state) => ({ theme: state.theme }),
+      partialize: (state) => ({
+        currentStation: state.currentStation,
+        volume: state.volume,
+        theme: state.theme,
+      }),
     },
   ),
 )

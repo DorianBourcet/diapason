@@ -7,6 +7,9 @@ const STATION_PAYLOADS: Record<string, string> = {
 }
 
 export async function fetchMetadata(station: Station): Promise<TrackMetadata> {
+  if (!station.adapterConfig) {
+    throw new Error(`Missing adapterConfig for station: ${station.id}`)
+  }
   const payload = STATION_PAYLOADS[station.adapterConfig.stationId]
 
   if (payload === undefined) {

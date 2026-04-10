@@ -2,8 +2,8 @@ export interface Station {
   id: string
   name: string
   streamUrl: string
-  adapter: 'radiofrance' | 'tsfjazz' | 'grrif'
-  adapterConfig: Record<string, string>
+  adapter?: 'radiofrance' | 'tsfjazz' | 'grrif' | 'kcrw-eclectic24' | 'kexp' | '247-lofi-radio'
+  adapterConfig?: Record<string, string>
 }
 
 export interface TrackMetadata {

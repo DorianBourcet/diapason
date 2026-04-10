@@ -11,6 +11,7 @@ export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const theme = usePlayerStore((s) => s.theme)
 
+  // Handle theme changes
   useEffect(() => {
     const root = document.documentElement
     const mq = window.matchMedia('(prefers-color-scheme: dark)')
@@ -19,6 +20,16 @@ export default function App() {
       const resolved = theme === 'system' ? (mq.matches ? 'dark' : 'light') : theme
       root.classList.remove('light', 'dark')
       root.classList.add(resolved)
+
+      const bgColor = getComputedStyle(root).getPropertyValue('--color-bg').trim()
+
+      let meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+      if (!meta) {
+        meta = document.createElement('meta')
+        meta.name = 'theme-color'
+        document.head.appendChild(meta)
+      }
+      meta.content = bgColor
     }
 
     apply()

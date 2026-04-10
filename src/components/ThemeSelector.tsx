@@ -24,10 +24,7 @@ export function ThemeSelector() {
             title={option.label}
             className={`
               flex-1 flex items-center justify-center py-1.5 rounded-md transition-colors cursor-pointer
-              ${isActive
-                ? 'bg-bg-elevated text-accent'
-                : 'text-text-muted hover:text-text'
-              }
+              ${isActive ? 'bg-bg-elevated text-accent' : 'text-text-muted hover:text-text'}
             `}
           >
             {option.icon}

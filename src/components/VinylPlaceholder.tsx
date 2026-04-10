@@ -6,7 +6,15 @@ export function VinylPlaceholder() {
 
       {/* Sillons */}
       {[60, 75, 90, 105, 115, 122, 129, 136, 143].map((r) => (
-        <circle key={r} cx="160" cy="160" r={r} fill="none" className="stroke-border" strokeWidth="1.5" />
+        <circle
+          key={r}
+          cx="160"
+          cy="160"
+          r={r}
+          fill="none"
+          className="stroke-border"
+          strokeWidth="1.5"
+        />
       ))}
 
       {/* Étiquette centrale */}
@@ -43,7 +51,15 @@ export function VinylPlaceholder() {
       <circle cx="160" cy="160" r="5" className="fill-bg" />
 
       {/* Reflet */}
-      <ellipse cx="130" cy="100" rx="30" ry="15" fill="white" opacity="0.02" transform="rotate(-30 130 100)" />
+      <ellipse
+        cx="130"
+        cy="100"
+        rx="30"
+        ry="15"
+        fill="white"
+        opacity="0.02"
+        transform="rotate(-30 130 100)"
+      />
     </svg>
   )
 }

@@ -5,16 +5,18 @@ import type { Station, TrackMetadata } from '../types'
 const SIXTY_SECONDS_INTERVAL = 60000
 const THIRTY_SECONDS_INTERVAL = 30000
 
-async function fetchMetadata(station: Station): Promise<TrackMetadata> {
+async function fetchMetadata(station: Station): Promise<TrackMetadata | null> {
+  if (!station.adapter) return null
+
   const adapter = await import(`../adapters/${station.adapter}.ts`)
   return adapter.fetchMetadata(station)
 }
 
-function normalizeTrack(track: TrackMetadata): TrackMetadata {
+function normalizeTrack(track: TrackMetadata | null, station: Station): TrackMetadata {
   return {
     ...track,
-    title: track.title || 'Titre inconnu',
-    artist: track.artist || 'Artiste inconnu',
+    title: track?.title || undefined,
+    artist: track?.artist || station.name,
   }
 }
 
@@ -49,7 +51,7 @@ export function useNowPlaying() {
         }
       }
 
-      const track = normalizeTrack(await fetchMetadata(currentStation!))
+      const track = normalizeTrack(await fetchMetadata(currentStation!), currentStation!)
       if (track?.coverUrl) {
         const img = new Image()
         img.src = track.coverUrl
@@ -72,6 +74,9 @@ export function useNowPlaying() {
   useEffect(() => {
     if (!shouldPoll) {
       setCurrentTrack(null)
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
       return
     }
 

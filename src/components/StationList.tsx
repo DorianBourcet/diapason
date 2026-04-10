@@ -27,10 +27,7 @@ export function StationList({ onSelect }: StationListProps) {
               className={`
                 w-full text-left px-3 py-2.5 rounded-md text-sm transition-colors cursor-pointer
                 relative flex items-center gap-3
-                ${isActive
-                  ? 'text-text'
-                  : 'text-text-muted hover:text-text hover:bg-accent-muted'
-                }
+                ${isActive ? 'text-text' : 'text-text-muted hover:text-text hover:bg-accent-muted'}
               `}
             >
               {isActive && (

@@ -83,19 +83,52 @@ export function VolumeControl() {
 function VolumeIcon({ volume }: { volume: number }) {
   if (volume === 0) {
     return (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path d="M2 5.5H4.5L8 2.5V13.5L4.5 10.5H2V5.5Z" fill="currentColor" fillOpacity="0.7" />
-        <line x1="11" y1="5.5" x2="15" y2="10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="15" y1="5.5" x2="11" y2="10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <line
+          x1="11"
+          y1="5.5"
+          x2="15"
+          y2="10.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <line
+          x1="15"
+          y1="5.5"
+          x2="11"
+          y2="10.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
       </svg>
     )
   }
 
   if (volume < 50) {
     return (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path d="M2 5.5H4.5L8 2.5V13.5L4.5 10.5H2V5.5Z" fill="currentColor" fillOpacity="0.7" />
-        <path d="M10 6.5C10.8 7 11 7.5 11 8C11 8.5 10.8 9 10 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <path
+          d="M10 6.5C10.8 7 11 7.5 11 8C11 8.5 10.8 9 10 9.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
       </svg>
     )
   }
@@ -103,8 +136,18 @@ function VolumeIcon({ volume }: { volume: number }) {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M2 5.5H4.5L8 2.5V13.5L4.5 10.5H2V5.5Z" fill="currentColor" fillOpacity="0.7" />
-      <path d="M10 6.5C10.8 7 11 7.5 11 8C11 8.5 10.8 9 10 9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M11.5 4.5C13.2 5.5 14 6.7 14 8C14 9.3 13.2 10.5 11.5 11.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path
+        d="M10 6.5C10.8 7 11 7.5 11 8C11 8.5 10.8 9 10 9.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M11.5 4.5C13.2 5.5 14 6.7 14 8C14 9.3 13.2 10.5 11.5 11.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   )
 }

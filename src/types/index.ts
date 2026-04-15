@@ -2,6 +2,7 @@ export interface Station {
   id: string
   name: string
   streamUrl: string
+  websiteUrl?: string
   adapter?: 'radiofrance' | 'tsfjazz' | 'grrif' | 'kcrw-eclectic24' | 'kexp' | '247-lofi-radio'
   adapterConfig?: Record<string, string>
 }

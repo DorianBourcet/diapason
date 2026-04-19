@@ -90,37 +90,26 @@ export function NowPlayingProgress() {
 }
 
 function ProgressBar({ startedAt, duration }: { startedAt: number; duration: number }) {
-  const progress = useProgress(startedAt, duration)
+  const elapsed = Date.now() / 1000 - startedAt
 
   return (
     <div
       className="w-full h-px bg-border overflow-hidden"
       role="progressbar"
-      aria-valuenow={progress}
       aria-valuemin={0}
       aria-valuemax={100}
     >
-      <div className="h-full bg-accent" style={{ width: `${progress}%` }} />
+      <div
+        key={startedAt}
+        className="h-full bg-accent"
+        style={{
+          animationName: 'progress-bar',
+          animationDuration: `${duration}s`,
+          animationDelay: `-${elapsed}s`,
+          animationTimingFunction: 'linear',
+          animationFillMode: 'both',
+        }}
+      />
     </div>
   )
-}
-
-function useProgress(startedAt: number, duration: number): number {
-  const [progress, setProgress] = useState(calculateProgress(startedAt, duration))
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress(calculateProgress(startedAt, duration))
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [startedAt, duration])
-
-  return progress
-}
-
-function calculateProgress(startedAt: number, duration: number): number {
-  const now = Date.now() / 1000
-  const elapsed = now - startedAt
-  return Math.min(Math.round((elapsed / duration) * 100), 100)
 }

@@ -16,9 +16,14 @@ interface PlayerActions {
   setCachedMetadata: (stationId: string, track: TrackMetadata) => void
   clearCachedMetadata: (stationId?: string) => void
   setTheme: (theme: Theme) => void
+  setErrorMessage: (msg: string | null) => void
 }
 
-type PlayerStore = PlayerState & { muted: boolean; previousVolume: number } & PlayerActions
+type PlayerStore = PlayerState & {
+  muted: boolean
+  previousVolume: number
+  errorMessage: string | null
+} & PlayerActions
 
 export const usePlayerStore = create<PlayerStore>()(
   persist(
@@ -30,6 +35,7 @@ export const usePlayerStore = create<PlayerStore>()(
       muted: false,
       previousVolume: 50,
       theme: 'system' as Theme,
+      errorMessage: null,
 
       setCurrentStation: (station) => set({ currentStation: station }),
       setCurrentTrack: (track) => set({ currentTrack: track }),
@@ -46,6 +52,7 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       setTheme: (theme: Theme) => set({ theme }),
+      setErrorMessage: (msg) => set({ errorMessage: msg }),
 
       selectStation: (station: Station) => {
         if (get().status === 'playing' && station.id === get().currentStation?.id) return

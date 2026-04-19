@@ -21,3 +21,8 @@
   --color-accent: #c97a5e;
   --color-accent-muted: #c97a5e26;
 }
+
+@keyframes toast-progress {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}

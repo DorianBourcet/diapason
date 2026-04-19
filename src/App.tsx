@@ -4,6 +4,7 @@ import { StationList } from './components/StationList'
 import { ThemeSelector } from './components/ThemeSelector'
 import { Player } from './components/Player'
 import { NowPlaying, NowPlayingProgress } from './components/NowPlaying'
+import { Toast } from './components/Toast'
 import { usePlayerStore } from './store/playerStore'
 
 export default function App() {
@@ -79,6 +80,8 @@ export default function App() {
           <Player />
         </footer>
       </main>
+
+      <Toast />
 
       {/* Mobile drawer — stations */}
       <>

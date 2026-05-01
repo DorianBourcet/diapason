@@ -64,7 +64,7 @@ export const usePlayerStore = create<PlayerStore>()(
           try {
             // eslint-disable-next-line no-console
             console.debug(`[metadata-cache] hit ${stationId}`, val)
-          } catch (e) {
+          } catch {
             // ignore
           }
         }
@@ -75,7 +75,7 @@ export const usePlayerStore = create<PlayerStore>()(
         try {
           // eslint-disable-next-line no-console
           console.debug(`[metadata-cache] set ${stationId}`, track)
-        } catch (e) {
+        } catch {
           // ignore
         }
       },

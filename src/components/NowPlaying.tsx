@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePlayerStore } from '../store/playerStore'
 import { VinylPlaceholder } from './VinylPlaceholder'
 import { AntennaPlaceholder } from './AntennaPlaceholder'
@@ -90,7 +90,40 @@ export function NowPlayingProgress() {
 }
 
 function ProgressBar({ startedAt, duration }: { startedAt: number; duration: number }) {
-  const elapsed = Date.now() / 1000 - startedAt
+  const CATCHUP_MS = 700
+  const mountElapsed = useRef(Date.now() / 1000 - startedAt)
+  const [phase, setPhase] = useState<'start' | 'catchup' | 'linear'>('start')
+
+  useEffect(() => {
+    mountElapsed.current = Date.now() / 1000 - startedAt
+    setPhase('start')
+    const raf = requestAnimationFrame(() => setPhase('catchup'))
+    const timer = setTimeout(() => setPhase('linear'), CATCHUP_MS)
+    return () => {
+      cancelAnimationFrame(raf)
+      clearTimeout(timer)
+    }
+  }, [startedAt])
+
+  const initialProgress = Math.min(
+    100,
+    ((mountElapsed.current + CATCHUP_MS / 1000) / duration) * 100,
+  )
+
+  const innerStyle: React.CSSProperties =
+    phase === 'linear'
+      ? {
+          animationName: 'progress-bar',
+          animationDuration: `${duration}s`,
+          animationDelay: `-${Date.now() / 1000 - startedAt}s`,
+          animationTimingFunction: 'linear',
+          animationFillMode: 'both',
+        }
+      : {
+          width: phase === 'catchup' ? `${initialProgress}%` : '0%',
+          transition:
+            phase === 'catchup' ? `width ${CATCHUP_MS}ms cubic-bezier(0.15, 0.85, 0.3, 1)` : 'none',
+        }
 
   return (
     <div
@@ -99,17 +132,7 @@ function ProgressBar({ startedAt, duration }: { startedAt: number; duration: num
       aria-valuemin={0}
       aria-valuemax={100}
     >
-      <div
-        key={startedAt}
-        className="h-full bg-accent"
-        style={{
-          animationName: 'progress-bar',
-          animationDuration: `${duration}s`,
-          animationDelay: `-${elapsed}s`,
-          animationTimingFunction: 'linear',
-          animationFillMode: 'both',
-        }}
-      />
+      <div className="h-full bg-accent" style={innerStyle} />
     </div>
   )
 }

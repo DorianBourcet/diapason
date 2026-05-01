@@ -14,10 +14,10 @@ if (import.meta.env.DEV) {
   ;(async () => {
     try {
       const storeModule = await import('./store/playerStore')
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(window as any).__playerStore = storeModule.usePlayerStore
-      ;(window as any).__getAllCachedMetadata = storeModule.getAllCachedMetadata
-    } catch (e) {
+      ;(window as unknown as Record<string, unknown>).__playerStore = storeModule.usePlayerStore
+      ;(window as unknown as Record<string, unknown>).__getAllCachedMetadata =
+        storeModule.getAllCachedMetadata
+    } catch {
       // ignore in dev if import fails
     }
   })()

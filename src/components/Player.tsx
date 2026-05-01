@@ -3,6 +3,7 @@ import { usePlayerStore } from '../store/playerStore'
 import { PlayStopButton } from './PlayStopButton'
 import { AudioPlayer } from './AudioPlayer'
 import { VolumeControl } from './VolumeControl'
+import { SleepTimerControl } from './SleepTimerControl'
 
 export function Player() {
   const { currentStation, status } = usePlayerStore()
@@ -29,9 +30,12 @@ export function Player() {
       {/* Bouton play/stop */}
       <PlayStopButton />
 
-      {/* Volume */}
-      <div className="w-40 hidden md:flex justify-end">
-        <VolumeControl />
+      {/* Right controls */}
+      <div className="w-40 flex items-center justify-end gap-1">
+        <SleepTimerControl />
+        <div className="hidden md:flex">
+          <VolumeControl />
+        </div>
       </div>
 
       {currentStation && status !== 'stopped' && <AudioPlayer />}

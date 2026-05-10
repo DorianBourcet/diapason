@@ -5,6 +5,17 @@ import https from 'node:https'
 
 export default defineConfig({
   base: '/diapason/',
+  build: {
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          lucide: ['lucide-react'],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),

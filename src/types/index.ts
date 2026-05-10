@@ -1,9 +1,15 @@
+import type { AdapterName } from '../adapters'
+
+export type SortOrder = 'az' | 'za'
+
 export interface Station {
   id: string
   name: string
   streamUrl: string
   websiteUrl?: string
-  adapter?: 'radiofrance' | 'tsfjazz' | 'grrif' | 'kcrw-eclectic24' | 'kexp' | '247-lofi-radio'
+  genres: string[]
+  country: string
+  adapter?: AdapterName
   adapterConfig?: Record<string, string>
 }
 
@@ -16,7 +22,7 @@ export interface TrackMetadata {
   duration?: number
 }
 
-export type PlaybackStatus = 'playing' | 'paused' | 'stopped' | 'loading'
+export type PlaybackStatus = 'playing' | 'stopped' | 'loading'
 
 export type Theme = 'system' | 'light' | 'dark'
 

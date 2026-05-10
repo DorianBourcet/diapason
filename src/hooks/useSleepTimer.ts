@@ -6,7 +6,10 @@ export function useSleepTimer() {
   const secondsRef = useRef<number | null>(null)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const { currentStation, currentTrack, status, setStatus } = usePlayerStore()
+  const currentStation = usePlayerStore((s) => s.currentStation)
+  const currentTrack = usePlayerStore((s) => s.currentTrack)
+  const status = usePlayerStore((s) => s.status)
+  const stop = usePlayerStore((s) => s.stop)
 
   function cancel() {
     if (intervalRef.current) clearInterval(intervalRef.current)
@@ -23,7 +26,7 @@ export function useSleepTimer() {
       secondsRef.current = (secondsRef.current ?? 1) - 1
       if (secondsRef.current <= 0) {
         cancel()
-        setStatus('stopped')
+        stop()
       } else {
         setSecondsRemaining(secondsRef.current)
       }

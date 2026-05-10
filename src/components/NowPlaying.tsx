@@ -5,7 +5,7 @@ import { AntennaPlaceholder } from './AntennaPlaceholder'
 import { MarqueeText } from './MarqueeText'
 
 export function NowPlaying() {
-  const { currentTrack, status } = usePlayerStore()
+  const { currentStation, currentTrack, status } = usePlayerStore()
   const [imageLoadError, setImageLoadError] = useState(false)
 
   useEffect(() => {
@@ -41,7 +41,10 @@ export function NowPlaying() {
             className="text-text font-light text-lg leading-snug lowercase w-full text-center"
           />
           <MarqueeText
-            text={currentTrack?.artist ?? ''}
+            text={
+              currentTrack?.artist ??
+              (currentTrack?.title || currentTrack?.album ? '' : (currentStation?.name ?? ''))
+            }
             className="text-text-muted text-xs tracking-widest uppercase w-full text-center"
           />
           {currentTrack?.album && (
@@ -74,7 +77,9 @@ export function NowPlaying() {
       <div className="opacity-30" style={coverSize}>
         <AntennaPlaceholder />
       </div>
-      <p className="text-xs text-text-muted tracking-widest">SÉLECTIONNER UNE STATION</p>
+      <p className="text-xs text-text-muted tracking-widest">
+        {currentStation ? currentStation.name.toUpperCase() : 'AUCUNE STATION SÉLECTIONNÉE'}
+      </p>
     </div>
   )
 }
@@ -92,13 +97,17 @@ export function NowPlayingProgress() {
 function ProgressBar({ startedAt, duration }: { startedAt: number; duration: number }) {
   const CATCHUP_MS = 700
   const mountElapsed = useRef(Date.now() / 1000 - startedAt)
+  const linearDelayRef = useRef(0)
   const [phase, setPhase] = useState<'start' | 'catchup' | 'linear'>('start')
 
   useEffect(() => {
     mountElapsed.current = Date.now() / 1000 - startedAt
     setPhase('start')
     const raf = requestAnimationFrame(() => setPhase('catchup'))
-    const timer = setTimeout(() => setPhase('linear'), CATCHUP_MS)
+    const timer = setTimeout(() => {
+      linearDelayRef.current = Date.now() / 1000 - startedAt
+      setPhase('linear')
+    }, CATCHUP_MS)
     return () => {
       cancelAnimationFrame(raf)
       clearTimeout(timer)
@@ -115,7 +124,7 @@ function ProgressBar({ startedAt, duration }: { startedAt: number; duration: num
       ? {
           animationName: 'progress-bar',
           animationDuration: `${duration}s`,
-          animationDelay: `-${Date.now() / 1000 - startedAt}s`,
+          animationDelay: `-${linearDelayRef.current}s`,
           animationTimingFunction: 'linear',
           animationFillMode: 'both',
         }

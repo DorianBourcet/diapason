@@ -1,10 +1,15 @@
+import { Play, Square } from 'lucide-react'
 import { usePlayerStore } from '../store/playerStore'
 
 export function PlayStopButton() {
-  const { currentStation, status, setStatus } = usePlayerStore()
+  const currentStation = usePlayerStore((s) => s.currentStation)
+  const status = usePlayerStore((s) => s.status)
+  const play = usePlayerStore((s) => s.play)
+  const stop = usePlayerStore((s) => s.stop)
 
   function handlePlayStop() {
-    setStatus(status === 'stopped' ? 'loading' : 'stopped')
+    if (status === 'playing' || status === 'loading') stop()
+    else play()
   }
 
   const isLoading = status === 'loading'
@@ -14,7 +19,7 @@ export function PlayStopButton() {
     <button
       onClick={handlePlayStop}
       aria-label={status !== 'playing' ? 'Lecture' : 'Stop'}
-      className="w-11 h-11 md:w-8 md:h-8 shrink-0 rounded-full border border-border flex items-center justify-center hover:border-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      className="w-11 h-11 md:w-8 md:h-8 shrink-0 rounded-full border border-border flex items-center justify-center hover:border-accent active:border-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       disabled={!currentStation}
     >
       {isLoading ? (
@@ -31,9 +36,9 @@ export function PlayStopButton() {
           />
         </svg>
       ) : isPlaying ? (
-        <span className="w-3 h-3 bg-text" />
+        <Square size={14} fill="currentColor" />
       ) : (
-        <span className="w-0 h-0 border-y-6 border-y-transparent border-l-[10px] border-l-text ml-0.5" />
+        <Play size={14} fill="currentColor" />
       )}
     </button>
   )

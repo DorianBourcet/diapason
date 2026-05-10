@@ -1,28 +1,43 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Station, TrackMetadata, PlayerState, PlaybackStatus, Theme } from '../types'
-
-// Module-scoped cache for metadata keyed by station id
-const metadataCache = new Map<string, TrackMetadata>()
+import type { Station, TrackMetadata, PlayerState, Theme, SortOrder } from '../types'
 
 interface PlayerActions {
   setCurrentStation: (station: Station | null) => void
   setCurrentTrack: (track: TrackMetadata | null) => void
-  setStatus: (status: PlaybackStatus) => void
   setVolume: (volume: number) => void
   toggleMute: () => void
   selectStation: (station: Station) => void
-  getCachedMetadata: (stationId: string) => TrackMetadata | undefined
-  setCachedMetadata: (stationId: string, track: TrackMetadata) => void
-  clearCachedMetadata: (stationId?: string) => void
   setTheme: (theme: Theme) => void
   setErrorMessage: (msg: string | null) => void
+  // Playback state machine (semantic actions — prefer these over raw status writes)
+  play: () => void
+  stop: () => void
+  reportPlaying: () => void
+  reportLoading: () => void
+  reportError: (msg: string) => void
+  // Favorites
+  toggleFavorite: (id: string) => void
+  // Sort & filters (filters not persisted — session only)
+  setSortOrder: (order: SortOrder) => void
+  toggleGenreFilter: (genre: string) => void
+  toggleCountryFilter: (country: string) => void
+  clearFilters: () => void
+  // Section collapse state
+  setFavoritesCollapsed: (v: boolean) => void
+  setStationsCollapsed: (v: boolean) => void
 }
 
 type PlayerStore = PlayerState & {
   muted: boolean
   previousVolume: number
   errorMessage: string | null
+  favorites: string[]
+  sortOrder: SortOrder
+  genreFilters: string[]
+  countryFilters: string[]
+  favoritesCollapsed: boolean
+  stationsCollapsed: boolean
 } & PlayerActions
 
 export const usePlayerStore = create<PlayerStore>()(
@@ -36,15 +51,19 @@ export const usePlayerStore = create<PlayerStore>()(
       previousVolume: 50,
       theme: 'system' as Theme,
       errorMessage: null,
+      favorites: [],
+      sortOrder: 'az' as SortOrder,
+      genreFilters: [],
+      countryFilters: [],
+      favoritesCollapsed: false,
+      stationsCollapsed: false,
 
       setCurrentStation: (station) => set({ currentStation: station }),
       setCurrentTrack: (track) => set({ currentTrack: track }),
-      setStatus: (status) => set({ status }),
       setVolume: (volume) => set({ volume, muted: volume === 0 }),
       toggleMute: () => {
         const { muted, volume, previousVolume } = get()
         if (muted) {
-          // Restore previous volume (minimum 10 to avoid staying at 0)
           set({ muted: false, volume: previousVolume > 0 ? previousVolume : 50 })
         } else {
           set({ muted: true, previousVolume: volume })
@@ -55,34 +74,58 @@ export const usePlayerStore = create<PlayerStore>()(
       setErrorMessage: (msg) => set({ errorMessage: msg }),
 
       selectStation: (station: Station) => {
-        if (get().status === 'playing' && station.id === get().currentStation?.id) return
-        set({ currentStation: station, status: 'loading' })
-      },
-      getCachedMetadata: (stationId: string) => {
-        const val = metadataCache.get(stationId)
-        if (val) {
-          try {
-            // eslint-disable-next-line no-console
-            console.debug(`[metadata-cache] hit ${stationId}`, val)
-          } catch {
-            // ignore
-          }
+        const { status, currentStation } = get()
+        if (station.id === currentStation?.id && (status === 'playing' || status === 'loading')) {
+          return
         }
-        return val
+        set({ currentStation: station, status: 'loading', currentTrack: null, errorMessage: null })
       },
-      setCachedMetadata: (stationId: string, track: TrackMetadata) => {
-        metadataCache.set(stationId, track)
-        try {
-          // eslint-disable-next-line no-console
-          console.debug(`[metadata-cache] set ${stationId}`, track)
-        } catch {
-          // ignore
-        }
+
+      play: () => {
+        const { status, currentStation } = get()
+        if (!currentStation) return
+        if (status === 'playing' || status === 'loading') return
+        set({ status: 'loading', errorMessage: null })
       },
-      clearCachedMetadata: (stationId?: string) => {
-        if (stationId) metadataCache.delete(stationId)
-        else metadataCache.clear()
+      stop: () => set({ status: 'stopped' }),
+      reportPlaying: () => set({ status: 'playing' }),
+      reportLoading: () => {
+        if (get().status === 'playing') set({ status: 'loading' })
       },
+      reportError: (msg: string) => set({ status: 'stopped', errorMessage: msg }),
+      toggleFavorite: (id: string) => {
+        const { favorites } = get()
+        set({
+          favorites: favorites.includes(id)
+            ? favorites.filter((f) => f !== id)
+            : [...favorites, id],
+        })
+      },
+
+      setSortOrder: (order: SortOrder) => set({ sortOrder: order }),
+
+      toggleGenreFilter: (genre: string) => {
+        const { genreFilters } = get()
+        set({
+          genreFilters: genreFilters.includes(genre)
+            ? genreFilters.filter((g) => g !== genre)
+            : [...genreFilters, genre],
+        })
+      },
+
+      toggleCountryFilter: (country: string) => {
+        const { countryFilters } = get()
+        set({
+          countryFilters: countryFilters.includes(country)
+            ? countryFilters.filter((c) => c !== country)
+            : [...countryFilters, country],
+        })
+      },
+
+      clearFilters: () => set({ genreFilters: [], countryFilters: [] }),
+
+      setFavoritesCollapsed: (v: boolean) => set({ favoritesCollapsed: v }),
+      setStationsCollapsed: (v: boolean) => set({ stationsCollapsed: v }),
     }),
     {
       name: 'diapason-store',
@@ -90,13 +133,11 @@ export const usePlayerStore = create<PlayerStore>()(
         currentStation: state.currentStation,
         volume: state.volume,
         theme: state.theme,
+        favorites: state.favorites,
+        sortOrder: state.sortOrder,
+        favoritesCollapsed: state.favoritesCollapsed,
+        stationsCollapsed: state.stationsCollapsed,
       }),
     },
   ),
 )
-
-export function getAllCachedMetadata(): Record<string, TrackMetadata> {
-  const out: Record<string, TrackMetadata> = {}
-  for (const [k, v] of metadataCache.entries()) out[k] = v
-  return out
-}

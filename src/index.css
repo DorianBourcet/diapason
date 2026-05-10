@@ -2,6 +2,11 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+html,
+body {
+  overscroll-behavior: none;
+}
+
 @theme {
   --color-bg: #f5f0eb;
   --color-bg-elevated: #ede6de;
@@ -23,11 +28,19 @@
 }
 
 @keyframes toast-progress {
-  from { transform: scaleX(1); }
-  to   { transform: scaleX(0); }
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
 }
 
 @keyframes progress-bar {
-  from { width: 0% }
-  to   { width: 100% }
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
 }

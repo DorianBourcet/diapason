@@ -14,9 +14,10 @@ if (import.meta.env.DEV) {
   ;(async () => {
     try {
       const storeModule = await import('./store/playerStore')
+      const { metadataCache } = await import('./utils/metadataCache')
       ;(window as unknown as Record<string, unknown>).__playerStore = storeModule.usePlayerStore
-      ;(window as unknown as Record<string, unknown>).__getAllCachedMetadata =
-        storeModule.getAllCachedMetadata
+      ;(window as unknown as Record<string, unknown>).__getAllCachedMetadata = () =>
+        metadataCache.snapshot()
     } catch {
       // ignore in dev if import fails
     }

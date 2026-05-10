@@ -10,9 +10,7 @@ export async function fetchMetadata(_station: Station): Promise<TrackMetadata> {
 
   const data = await response.json()
 
-  if (!Array.isArray(data) || data.length === 0) {
-    throw new Error('No track currently playing')
-  }
+  if (!Array.isArray(data) || data.length === 0) return {}
 
   const current = data[data.length - 1]
 

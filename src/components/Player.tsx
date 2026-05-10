@@ -1,16 +1,15 @@
 import { ExternalLink } from 'lucide-react'
 import { usePlayerStore } from '../store/playerStore'
 import { PlayStopButton } from './PlayStopButton'
-import { AudioPlayer } from './AudioPlayer'
 import { VolumeControl } from './VolumeControl'
 import { SleepTimerControl } from './SleepTimerControl'
 
 export function Player() {
-  const { currentStation, status } = usePlayerStore()
+  const currentStation = usePlayerStore((s) => s.currentStation)
 
   return (
     <div className="flex items-center justify-between px-6 h-14">
-      {/* Station active */}
+      {/* Active station */}
       {currentStation?.websiteUrl ? (
         <a
           href={currentStation.websiteUrl}
@@ -27,7 +26,7 @@ export function Player() {
         </span>
       )}
 
-      {/* Bouton play/stop */}
+      {/* Play/stop button */}
       <PlayStopButton />
 
       {/* Right controls */}
@@ -37,8 +36,6 @@ export function Player() {
           <VolumeControl />
         </div>
       </div>
-
-      {currentStation && status !== 'stopped' && <AudioPlayer />}
     </div>
   )
 }

@@ -1,36 +1,67 @@
-import { Monitor, Sun, Moon } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Sun, Moon, Monitor } from 'lucide-react'
 import { usePlayerStore } from '../store/playerStore'
 import type { Theme } from '../types'
 
-const options: { value: Theme; icon: React.ReactNode; label: string }[] = [
-  { value: 'system', icon: <Monitor size={14} />, label: 'Système' },
-  { value: 'light', icon: <Sun size={14} />, label: 'Clair' },
-  { value: 'dark', icon: <Moon size={14} />, label: 'Sombre' },
+const themes: { value: Theme; Icon: typeof Sun }[] = [
+  { value: 'system', Icon: Monitor },
+  { value: 'light', Icon: Sun },
+  { value: 'dark', Icon: Moon },
 ]
 
 export function ThemeSelector() {
-  const { theme, setTheme } = usePlayerStore()
+  const [expanded, setExpanded] = useState(false)
+  const theme = usePlayerStore((s) => s.theme)
+  const setTheme = usePlayerStore((s) => s.setTheme)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const CurrentIcon = themes.find((t) => t.value === theme)?.Icon ?? Monitor
+
+  function handleSelect(value: Theme) {
+    setTheme(value)
+    setExpanded(false)
+  }
+
+  useEffect(() => {
+    if (!expanded) return
+    function onClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setExpanded(false)
+      }
+    }
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
+  }, [expanded])
 
   return (
-    <div className="flex bg-bg rounded-lg p-0.5 gap-0.5 border border-border">
-      {options.map((option) => {
-        const isActive = theme === option.value
-        return (
-          <button
-            key={option.value}
-            onClick={() => setTheme(option.value)}
-            aria-pressed={isActive}
-            aria-label={option.label}
-            title={option.label}
-            className={`
-              flex-1 flex items-center justify-center py-1.5 rounded-md transition-colors cursor-pointer
-              ${isActive ? 'bg-bg-elevated text-accent' : 'text-text-muted hover:text-text'}
-            `}
-          >
-            {option.icon}
-          </button>
-        )
-      })}
+    <div ref={containerRef} className="flex items-center">
+      <div
+        style={{ maxWidth: expanded ? '88px' : '0px', opacity: expanded ? 1 : 0 }}
+        className="flex items-center overflow-hidden transition-[max-width,opacity] duration-200 ease-out"
+      >
+        {themes
+          .filter(({ value }) => value !== theme)
+          .map(({ value, Icon }) => (
+            <button
+              key={value}
+              onClick={() => handleSelect(value)}
+              aria-label={value}
+              className="p-3 rounded cursor-pointer transition-colors text-text-muted hover:text-text"
+            >
+              <Icon size={14} />
+            </button>
+          ))}
+      </div>
+
+      <button
+        onClick={() => setExpanded((v) => !v)}
+        aria-label="Changer le thème"
+        className={`p-3 -mr-3 rounded cursor-pointer transition-colors ${
+          expanded ? 'text-accent' : 'text-text-muted hover:text-text'
+        }`}
+      >
+        <CurrentIcon size={14} />
+      </button>
     </div>
   )
 }

@@ -3,7 +3,11 @@ import { proxyUrl } from '../utils/proxyUrl'
 
 const STATION_PAYLOADS: Record<string, string> = {
   fip: 'W3siYnJhbmROYW1lIjoxfSwiZmlwIl0',
+  fipJazz: 'W3siYnJhbmROYW1lIjoxfSwiZmlwX2phenoiXQ',
+  fipRock: 'W3siYnJhbmROYW1lIjoxfSwiZmlwX3JvY2siXQ',
   francemusique: 'W3siYnJhbmROYW1lIjoxfSwiZnJhbmNlbXVzaXF1ZSJd',
+  francemusiqueLaJazz: 'W3siYnJhbmROYW1lIjoxfSwiZnJhbmNlbXVzaXF1ZV9sYV9qYXp6Il0',
+  francemusiquePianoZen: 'W3siYnJhbmROYW1lIjoxfSwiZnJhbmNlbXVzaXF1ZV9waWFub196ZW4iXQ',
 }
 
 export async function fetchMetadata(station: Station): Promise<TrackMetadata> {

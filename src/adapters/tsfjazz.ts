@@ -11,13 +11,11 @@ export async function fetchMetadata(_station: Station): Promise<TrackMetadata> {
   const data = await response.json()
   const current = data.current
 
-  if (!current) {
-    throw new Error('No track currently playing')
-  }
+  if (!current) return {}
 
   return {
-    title: current.title ? current.title.toLowerCase() : undefined,
-    artist: current.artist ? current.artist : undefined,
+    title: current.title ?? undefined,
+    artist: current.artist ?? undefined,
     coverUrl: current.cover ?? undefined,
     startedAt: current.start_time ?? undefined,
     duration: current.duration ?? undefined,

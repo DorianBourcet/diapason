@@ -1,22 +1,24 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { usePlayerStore } from '../store/playerStore'
+import { metadataCache } from '../utils/metadataCache'
+import { adapters } from '../adapters'
 import type { Station, TrackMetadata } from '../types'
 
 const SIXTY_SECONDS_INTERVAL = 60000
 const THIRTY_SECONDS_INTERVAL = 30000
+const ERROR_BACKOFF_CAP = 5 * 60 * 1000
+const ERROR_TOAST_THRESHOLD = 3
 
 async function fetchMetadata(station: Station): Promise<TrackMetadata | null> {
   if (!station.adapter) return null
-
-  const adapter = await import(`../adapters/${station.adapter}.ts`)
-  return adapter.fetchMetadata(station)
+  return adapters[station.adapter].fetchMetadata(station)
 }
 
-function normalizeTrack(track: TrackMetadata | null, station: Station): TrackMetadata {
+function normalizeTrack(track: TrackMetadata | null): TrackMetadata {
   return {
     ...track,
     title: track?.title || undefined,
-    artist: track?.artist || station.name,
+    artist: track?.artist || undefined,
   }
 }
 
@@ -32,60 +34,75 @@ function getNextPollDelay(track: TrackMetadata): number {
 }
 
 export function useNowPlaying() {
-  const { currentStation, status, setCurrentTrack, getCachedMetadata, setCachedMetadata } =
-    usePlayerStore()
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const shouldPoll = ['playing', 'loading'].includes(status)
+  const currentStation = usePlayerStore((s) => s.currentStation)
+  const status = usePlayerStore((s) => s.status)
+  const setCurrentTrack = usePlayerStore((s) => s.setCurrentTrack)
 
-  const poll = useCallback(async () => {
-    try {
-      // Check cache first
-      const cached = getCachedMetadata?.(currentStation!.id)
-      if (cached && cached.startedAt && cached.duration) {
-        const now = Date.now() / 1000
-        if (cached.startedAt + cached.duration > now) {
-          setCurrentTrack(cached)
-          const delay = getNextPollDelay(cached)
-          timeoutRef.current = setTimeout(poll, delay)
-          return
-        }
-      }
-
-      const track = normalizeTrack(await fetchMetadata(currentStation!), currentStation!)
-      if (track?.coverUrl) {
-        const img = new Image()
-        img.src = track.coverUrl
-      }
-      setCurrentTrack(track)
-
-      const now = Date.now() / 1000
-      if (track.startedAt && track.duration && track.startedAt + track.duration > now) {
-        setCachedMetadata?.(currentStation!.id, track)
-      }
-
-      const delay = getNextPollDelay(track)
-      timeoutRef.current = setTimeout(poll, delay)
-    } catch (error) {
-      console.error('Error fetching metadata:', error)
-      timeoutRef.current = setTimeout(poll, SIXTY_SECONDS_INTERVAL)
-    }
-  }, [currentStation, getCachedMetadata, setCachedMetadata, setCurrentTrack])
+  const setErrorMessage = usePlayerStore((s) => s.setErrorMessage)
+  const stationId = currentStation?.id
+  const shouldPoll = status === 'playing' || status === 'loading'
 
   useEffect(() => {
-    if (!shouldPoll) {
+    if (!shouldPoll || !currentStation) {
       setCurrentTrack(null)
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
       return
     }
 
-    poll()
+    const station = currentStation
+    let cancelled = false
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+    let consecutiveFailures = 0
 
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
+    const schedule = (delay: number) => {
+      if (cancelled) return
+      timeoutId = setTimeout(tick, delay)
+    }
+
+    const tick = async () => {
+      try {
+        const cached = metadataCache.get(station.id)
+        if (cached) {
+          if (cancelled) return
+          setCurrentTrack(cached)
+          schedule(getNextPollDelay(cached))
+          return
+        }
+
+        const raw = await fetchMetadata(station)
+        if (cancelled) return
+
+        const track = normalizeTrack(raw)
+
+        if (track.coverUrl) {
+          const img = new Image()
+          img.src = track.coverUrl
+        }
+        setCurrentTrack(track)
+        metadataCache.set(station.id, track)
+        consecutiveFailures = 0
+
+        schedule(getNextPollDelay(track))
+      } catch (error) {
+        if (cancelled) return
+        consecutiveFailures += 1
+        console.error(`Error fetching metadata (attempt ${consecutiveFailures}):`, error)
+        if (consecutiveFailures === ERROR_TOAST_THRESHOLD) {
+          setErrorMessage('Métadonnées indisponibles')
+        }
+        const delay = Math.min(
+          SIXTY_SECONDS_INTERVAL * 2 ** (consecutiveFailures - 1),
+          ERROR_BACKOFF_CAP,
+        )
+        schedule(delay)
       }
     }
-  }, [shouldPoll, poll, setCurrentTrack])
+
+    tick()
+
+    return () => {
+      cancelled = true
+      if (timeoutId) clearTimeout(timeoutId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldPoll, stationId, setCurrentTrack, setErrorMessage])
 }

@@ -4,8 +4,11 @@
 - [x] Disable play button if no radio is selected
 - [x] Be mobile responsive
 - [x] Light/Dark theme
-- [/] Smooth transitions between covers
 - [x] Remember last listened radio
+- [X] Favorites
+- [X] Handle bad connection and disconnection
+- [/] Smooth transitions between covers
 - [ ] i18n
-- [ ] Favorites
-- [ ] Handle bad connection and disconnection
+- [ ] react-hot-toast ?
+- [ ] List virtualization (TanStack)
+- [ ] use reduce in useStationBrowser

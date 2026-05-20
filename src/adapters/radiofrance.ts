@@ -2,8 +2,8 @@ import type { Station, TrackMetadata } from '../types'
 import { proxyUrl } from '../utils/proxyUrl'
 
 const STATION_PAYLOADS: Record<string, string> = {
-  fip: 'W3siYnJhbmROYW1lIjoxfSwiZmlwIl0',
-  fipJazz: 'W3siYnJhbmROYW1lIjoxfSwiZmlwX2phenoiXQ',
+  fip: 'W3siYnJhbmROYW1lIjoxLCJ2ZXJzaW9uIjoyfSwiZmlwIiwiMjAyNi0wNS0xMiJd',
+  fipJazz: 'W3siYnJhbmROYW1lIjoxLCJ2ZXJzaW9uIjoyfSwiZmlwX2phenoiLCIyMDI2LTA1LTEyIl0',
   fipRock: 'W3siYnJhbmROYW1lIjoxfSwiZmlwX3JvY2siXQ',
   francemusique: 'W3siYnJhbmROYW1lIjoxfSwiZnJhbmNlbXVzaXF1ZSJd',
   francemusiqueLaJazz: 'W3siYnJhbmROYW1lIjoxfSwiZnJhbmNlbXVzaXF1ZV9sYV9qYXp6Il0',

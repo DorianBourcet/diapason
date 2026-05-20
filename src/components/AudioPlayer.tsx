@@ -3,7 +3,9 @@ import { useEffect, useRef } from 'react'
 import { usePlayerStore } from '../store/playerStore'
 
 export function AudioPlayer() {
-  const audioRef = useRef<HTMLAudioElement>(null)
+  // Always use <video> (hidden): hls.js + Managed Media Source on iOS Safari requires
+  // a video element, and <video> plays MP3/icecast streams just as well.
+  const mediaRef = useRef<HTMLVideoElement>(null)
   const hlsRef = useRef<Hls | null>(null)
   const prevStreamUrlRef = useRef<string | undefined>(undefined)
   const currentStation = usePlayerStore((s) => s.currentStation)
@@ -18,10 +20,10 @@ export function AudioPlayer() {
   const reportError = usePlayerStore((s) => s.reportError)
   const currentStreamUrl = currentStation?.streamUrl
 
-  // Sync audio element events → store status
+  // Sync media element events → store status
   useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
+    const media = mediaRef.current
+    if (!media) return
 
     let stalledTimer: ReturnType<typeof setTimeout> | null = null
 
@@ -34,41 +36,46 @@ export function AudioPlayer() {
     }
     const onWaiting = () => reportLoading()
     const onStalled = () => {
-      // Safari fires `stalled` between HLS segments — wait before treating it as fatal
-      if (audio.paused || stalledTimer) return
+      // Safari fires `stalled` spuriously between HLS segment bursts. Only treat it
+      // as fatal if `currentTime` has not advanced during the grace window.
+      if (media.paused || stalledTimer) return
+      const startTime = media.currentTime
       stalledTimer = setTimeout(() => {
         stalledTimer = null
-        if (!audio.paused) reportError('Connexion au flux audio perdue')
+        if (!media.paused && media.currentTime === startTime) {
+          reportError('Connexion au flux audio perdue')
+        }
       }, 8000)
     }
     const onError = () => reportError('Impossible de se connecter au flux audio')
 
-    audio.addEventListener('playing', onPlaying)
-    audio.addEventListener('waiting', onWaiting)
-    audio.addEventListener('stalled', onStalled)
-    audio.addEventListener('error', onError)
+    media.addEventListener('playing', onPlaying)
+    media.addEventListener('waiting', onWaiting)
+    media.addEventListener('stalled', onStalled)
+    media.addEventListener('error', onError)
 
     return () => {
-      audio.removeEventListener('playing', onPlaying)
-      audio.removeEventListener('waiting', onWaiting)
-      audio.removeEventListener('stalled', onStalled)
-      audio.removeEventListener('error', onError)
+      media.removeEventListener('playing', onPlaying)
+      media.removeEventListener('waiting', onWaiting)
+      media.removeEventListener('stalled', onStalled)
+      media.removeEventListener('error', onError)
       if (stalledTimer) clearTimeout(stalledTimer)
-      audio.pause()
-      audio.removeAttribute('src')
-      audio.load()
+      media.pause()
+      media.removeAttribute('src')
+      media.load()
     }
   }, [reportPlaying, reportLoading, reportError])
 
-  // Set audio source when current station changes
+  // Set media source when current station changes
   useEffect(() => {
-    const audio = audioRef.current
-    if (!audio || !currentStreamUrl) return
+    const media = mediaRef.current
+    if (!media || !currentStreamUrl) return
 
     let active = true
 
     const startPlayback = async () => {
-      const isHls = currentStreamUrl.endsWith('.m3u8')
+      // Match `.m3u8` in the path, ignoring query strings (e.g. `?id=radiofrance`).
+      const isHls = /\.m3u8($|\?)/i.test(currentStreamUrl)
 
       hlsRef.current?.destroy()
       hlsRef.current = null
@@ -84,20 +91,19 @@ export function AudioPlayer() {
             reportError('Impossible de se connecter au flux audio')
           })
           hls.loadSource(currentStreamUrl)
-          hls.attachMedia(audio)
+          hls.attachMedia(media)
         } else {
-          // Native HLS (Safari)
-          audio.src = currentStreamUrl
-          audio.load()
+          reportError('Impossible de se connecter au flux audio')
+          return
         }
       } else {
-        if (audio.src !== currentStreamUrl || audio.paused) {
-          audio.src = currentStreamUrl
-          audio.load()
+        if (media.src !== currentStreamUrl || media.paused) {
+          media.src = currentStreamUrl
+          media.load()
         }
       }
 
-      audio.play().catch((err) => {
+      media.play().catch((err) => {
         if (!active) return
         // AbortError is expected (src changed mid-play); NotAllowedError is autoplay policy
         if (err.name === 'AbortError' || err.name === 'NotAllowedError') return
@@ -108,11 +114,11 @@ export function AudioPlayer() {
     if (status === 'loading') {
       const urlChanged = currentStreamUrl !== prevStreamUrlRef.current
       prevStreamUrlRef.current = currentStreamUrl
-      // Restart when URL changed (station switch) or when audio is paused.
+      // Restart when URL changed (station switch) or when media is paused.
       // Skip reload when `waiting` fires during normal HLS segment transitions.
-      if (urlChanged || audio.paused) startPlayback()
+      if (urlChanged || media.paused) startPlayback()
     } else if (status === 'stopped') {
-      audio.pause()
+      media.pause()
       hlsRef.current?.destroy()
       hlsRef.current = null
     }
@@ -165,9 +171,9 @@ export function AudioPlayer() {
 
   // Handle volume and mute
   useEffect(() => {
-    if (!audioRef.current) return
-    audioRef.current.volume = muted ? 0 : volume / 100
+    if (!mediaRef.current) return
+    mediaRef.current.volume = muted ? 0 : volume / 100
   }, [volume, muted])
 
-  return <audio ref={audioRef} />
+  return <video ref={mediaRef} playsInline style={{ display: 'none' }} />
 }

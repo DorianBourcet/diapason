@@ -40,7 +40,7 @@ export const stations: Station[] = [
   {
     id: 'fip',
     name: 'FIP',
-    streamUrl: 'https://icecast.radiofrance.fr/fip-hifi.aac',
+    streamUrl: 'https://stream.radiofrance.fr/fip/fip.m3u8?id=radiofrance',
     websiteUrl: 'https://www.radiofrance.fr/fip',
     genres: ['eclectic', 'pop', 'jazz', 'world'],
     country: 'FR',
@@ -52,7 +52,7 @@ export const stations: Station[] = [
   {
     id: 'fip-jazz',
     name: 'FIP Jazz',
-    streamUrl: 'https://icecast.radiofrance.fr/fipjazz-hifi.aac',
+    streamUrl: 'https://stream.radiofrance.fr/fipjazz/fipjazz.m3u8?id=radiofrance',
     websiteUrl: 'https://www.radiofrance.fr/fip',
     genres: ['jazz'],
     country: 'FR',
@@ -76,7 +76,7 @@ export const stations: Station[] = [
   {
     id: 'francemusique',
     name: 'France Musique',
-    streamUrl: 'https://icecast.radiofrance.fr/francemusique-hifi.aac',
+    streamUrl: 'https://stream.radiofrance.fr/francemusique/francemusique.m3u8?id=radiofrance',
     websiteUrl: 'https://www.radiofrance.fr/francemusique',
     genres: ['classical', 'jazz', 'contemporary'],
     country: 'FR',

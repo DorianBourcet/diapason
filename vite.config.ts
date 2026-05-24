@@ -48,7 +48,9 @@ export default defineConfig({
             res.statusCode = 502
             res.end('Proxy error')
           })
-          request.end()
+          // Forward the incoming request body (e.g. POST JSON payloads); for
+          // bodyless requests this ends the upstream request immediately.
+          req.pipe(request)
         })
       },
     },

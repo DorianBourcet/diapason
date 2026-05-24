@@ -38,6 +38,19 @@ export const stations: Station[] = [
     country: 'CA',
   },
   {
+    id: 'classic-21',
+    name: 'Classic 21',
+    streamUrl: 'https://radio.rtbf.be/c21/aac-128/rp-web?rp_source=1',
+    websiteUrl: 'https://www.rtbf.be/radio/liveradio/classic21',
+    genres: ['rock', 'classic-rock', 'pop'],
+    country: 'BE',
+    adapter: 'radioplayer',
+    adapterConfig: {
+      prefix: '056',
+      rpId: '2',
+    },
+  },
+  {
     id: 'fip',
     name: 'FIP',
     streamUrl: 'https://stream.radiofrance.fr/fip/fip.m3u8?id=radiofrance',
@@ -47,6 +60,54 @@ export const stations: Station[] = [
     adapter: 'radiofrance',
     adapterConfig: {
       stationId: 'fip',
+    },
+  },
+  {
+    id: 'fip-cultes',
+    name: 'FIP Cultes',
+    streamUrl: 'https://stream.radiofrance.fr/fipcultes/fipcultes.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/fip',
+    genres: ['classics', 'eclectic'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'fipCultes',
+    },
+  },
+  {
+    id: 'fip-electro',
+    name: 'FIP Electro',
+    streamUrl: 'https://stream.radiofrance.fr/fipelectro/fipelectro.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/fip',
+    genres: ['electronic'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'fipElectro',
+    },
+  },
+  {
+    id: 'fip-groove',
+    name: 'FIP Groove',
+    streamUrl: 'https://stream.radiofrance.fr/fipgroove/fipgroove.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/fip',
+    genres: ['funk', 'soul', 'disco', 'groove'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'fipGroove',
+    },
+  },
+  {
+    id: 'fip-hiphop',
+    name: 'FIP Hip-Hop',
+    streamUrl: 'https://stream.radiofrance.fr/fiphiphop/fiphiphop.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/fip',
+    genres: ['hip-hop', 'rap'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'fipHiphop',
     },
   },
   {
@@ -62,15 +123,88 @@ export const stations: Station[] = [
     },
   },
   {
+    id: 'fip-metal',
+    name: 'FIP Metal',
+    streamUrl: 'https://stream.radiofrance.fr/fipmetal/fipmetal.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/fip',
+    genres: ['metal'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'fipMetal',
+    },
+  },
+  {
+    id: 'fip-monde',
+    name: 'FIP Monde',
+    streamUrl: 'https://stream.radiofrance.fr/fipworld/fipworld.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/fip',
+    genres: ['world'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'fipWorld',
+    },
+  },
+  {
+    id: 'fip-nouveautes',
+    name: 'FIP Nouveautés',
+    streamUrl: 'https://stream.radiofrance.fr/fipnouveautes/fipnouveautes.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/fip',
+    genres: ['new', 'eclectic'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'fipNouveautes',
+    },
+  },
+  {
+    id: 'fip-pop',
+    name: 'FIP Pop',
+    streamUrl: 'https://stream.radiofrance.fr/fippop/fippop.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/fip',
+    genres: ['pop', 'indie'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'fipPop',
+    },
+  },
+  {
+    id: 'fip-reggae',
+    name: 'FIP Reggae',
+    streamUrl: 'https://stream.radiofrance.fr/fipreggae/fipreggae.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/fip',
+    genres: ['reggae', 'dub'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'fipReggae',
+    },
+  },
+  {
     id: 'fip-rock',
     name: 'FIP Rock',
-    streamUrl: 'https://icecast.radiofrance.fr/fiprock-hifi.aac',
+    streamUrl: 'https://stream.radiofrance.fr/fiprock/fiprock.m3u8?id=radiofrance',
     websiteUrl: 'https://www.radiofrance.fr/fip',
     genres: ['rock'],
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
       stationId: 'fipRock',
+    },
+  },
+  {
+    id: 'fip-sacre-francais',
+    name: 'FIP Sacré français',
+    streamUrl:
+      'https://stream.radiofrance.fr/fipsacrefrancais/fipsacrefrancais.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/fip',
+    genres: ['french', 'chanson'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'fipSacreFrancais',
     },
   },
   {
@@ -86,9 +220,101 @@ export const stations: Station[] = [
     },
   },
   {
+    id: 'francemusique-baroque',
+    name: 'France Musique Baroque',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiquebaroque/francemusiquebaroque.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/francemusique',
+    genres: ['classical', 'baroque'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'francemusiqueBaroque',
+    },
+  },
+  {
+    id: 'francemusique-classique-easy',
+    name: 'France Musique Classique Easy',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiqueeasyclassique/francemusiqueeasyclassique.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/francemusique',
+    genres: ['classical', 'easy-listening'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'francemusiqueClassiqueEasy',
+    },
+  },
+  {
+    id: 'francemusique-classique-love',
+    name: 'France Musique Classique Love',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiqueclassiquelove/francemusiqueclassiquelove.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/francemusique',
+    genres: ['classical', 'romantic'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'francemusiqueClassiqueLove',
+    },
+  },
+  {
+    id: 'francemusique-classique-plus',
+    name: 'France Musique Classique Plus',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiqueclassiqueplus/francemusiqueclassiqueplus.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/francemusique',
+    genres: ['classical'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'francemusiqueClassiquePlus',
+    },
+  },
+  {
+    id: 'francemusique-concerts-rf',
+    name: 'France Musique Concerts Radio France',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiqueconcertsradiofrance/francemusiqueconcertsradiofrance.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/francemusique',
+    genres: ['classical', 'concert'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'francemusiqueConcertsRf',
+    },
+  },
+  {
+    id: 'francemusique-contemporaine',
+    name: 'France Musique Contemporaine',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiquelacontemporaine/francemusiquelacontemporaine.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/francemusique',
+    genres: ['classical', 'contemporary'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'francemusiqueLaContemporaine',
+    },
+  },
+  {
+    id: 'francemusique-films',
+    name: 'France Musique Films',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiquelabo/francemusiquelabo.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/francemusique',
+    genres: ['soundtrack', 'film'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'francemusiqueFilms',
+    },
+  },
+  {
     id: 'francemusique-la-jazz',
     name: 'France Musique La Jazz',
-    streamUrl: 'https://icecast.radiofrance.fr/francemusiquelajazz-hifi.aac',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiquelajazz/francemusiquelajazz.m3u8?id=radiofrance',
     websiteUrl: 'https://www.radiofrance.fr/francemusique',
     genres: ['jazz'],
     country: 'FR',
@@ -98,9 +324,36 @@ export const stations: Station[] = [
     },
   },
   {
+    id: 'francemusique-ocora',
+    name: 'France Musique Ocora',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiqueocoramonde/francemusiqueocoramonde.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/francemusique',
+    genres: ['world', 'traditional'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'francemusiqueOcora',
+    },
+  },
+  {
+    id: 'francemusique-opera',
+    name: 'France Musique Opéra',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiqueopera/francemusiqueopera.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/francemusique',
+    genres: ['classical', 'opera'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      stationId: 'francemusiqueOpera',
+    },
+  },
+  {
     id: 'francemusique-piano-zen',
     name: 'France Musique Piano Zen',
-    streamUrl: 'https://icecast.radiofrance.fr/francemusiquepianozen-hifi.aac',
+    streamUrl:
+      'https://stream.radiofrance.fr/francemusiquepianozen/francemusiquepianozen.m3u8?id=radiofrance',
     websiteUrl: 'https://www.radiofrance.fr/francemusique',
     genres: ['classical'],
     country: 'FR',
@@ -118,6 +371,18 @@ export const stations: Station[] = [
     country: 'CH',
     adapter: 'grrif',
     adapterConfig: {},
+  },
+  {
+    id: 'jazz-radio',
+    name: 'Jazz Radio',
+    streamUrl: 'https://jazzradio.ice.infomaniak.ch/jazzradio-high.mp3',
+    websiteUrl: 'https://www.jazzradio.fr',
+    genres: ['jazz', 'soul', 'funk', 'blues'],
+    country: 'FR',
+    adapter: 'jazzradio',
+    adapterConfig: {
+      radioId: '1',
+    },
   },
   {
     id: 'kcrw-eclectic24',
@@ -140,12 +405,134 @@ export const stations: Station[] = [
     adapterConfig: {},
   },
   {
+    id: 'nouvo-nova',
+    name: 'Nouvo Nova',
+    streamUrl: 'https://nova-nouvo.ice.infomaniak.ch/nova-nouvo-128.mp3',
+    websiteUrl: 'https://www.nova.fr',
+    genres: ['new', 'eclectic'],
+    country: 'FR',
+    adapter: 'nova',
+    adapterConfig: {
+      code: 'nouvo-nova',
+    },
+  },
+  {
+    id: 'nova-classics',
+    name: 'Nova Classics',
+    streamUrl: 'https://nova-vnt.ice.infomaniak.ch/nova-vnt-128.mp3',
+    websiteUrl: 'https://www.nova.fr',
+    genres: ['eclectic', 'classics'],
+    country: 'FR',
+    adapter: 'nova',
+    adapterConfig: {
+      code: 'nova-classics',
+    },
+  },
+  {
+    id: 'nova-danse',
+    name: 'Nova Danse',
+    streamUrl: 'https://nova-dance.ice.infomaniak.ch/nova-dance-128.mp3',
+    websiteUrl: 'https://www.nova.fr',
+    genres: ['dance', 'electronic'],
+    country: 'FR',
+    adapter: 'nova',
+    adapterConfig: {
+      code: 'nova-danse',
+    },
+  },
+  {
+    id: 'nova-hip-hop',
+    name: 'Nova Hip-Hop',
+    streamUrl: 'https://nova-odn.ice.infomaniak.ch/nova-odn-128.mp3',
+    websiteUrl: 'https://www.nova.fr',
+    genres: ['hip-hop', 'rap'],
+    country: 'FR',
+    adapter: 'nova',
+    adapterConfig: {
+      code: 'nova-hip-hop',
+    },
+  },
+  {
+    id: 'nova-lanuit',
+    name: 'Nova la nuit',
+    streamUrl: 'https://nova-ln.ice.infomaniak.ch/nova-ln-128.mp3',
+    websiteUrl: 'https://www.nova.fr',
+    genres: ['ambient', 'chill', 'eclectic'],
+    country: 'FR',
+    adapter: 'nova',
+    adapterConfig: {
+      code: 'nova-lanuit',
+    },
+  },
+  {
+    id: 'nova-reggae',
+    name: 'Nova Reggae',
+    streamUrl: 'https://nova-reggae.ice.infomaniak.ch/nova-reggae-128.mp3',
+    websiteUrl: 'https://www.nova.fr',
+    genres: ['reggae', 'dub'],
+    country: 'FR',
+    adapter: 'nova',
+    adapterConfig: {
+      code: 'nova-reggae',
+    },
+  },
+  {
+    id: 'nova-soul',
+    name: 'Nova Soul',
+    streamUrl: 'https://nova-soul.ice.infomaniak.ch/nova-soul-128.mp3',
+    websiteUrl: 'https://www.nova.fr',
+    genres: ['soul', 'funk'],
+    country: 'FR',
+    adapter: 'nova',
+    adapterConfig: {
+      code: 'nova-soul',
+    },
+  },
+  {
+    id: 'ouifm',
+    name: 'Oüi FM',
+    streamUrl: 'https://ouifm.ice.infomaniak.ch/ouifm-high.mp3',
+    websiteUrl: 'https://www.ouifm.fr',
+    genres: ['rock', 'alternative', 'classic-rock'],
+    country: 'FR',
+    adapter: 'ouifm',
+    adapterConfig: {
+      radioStreamId: '2174546520932614531',
+    },
+  },
+  {
+    id: 'radio-classique',
+    name: 'Radio Classique',
+    streamUrl: 'https://radioclassique.ice.infomaniak.ch/radioclassique-high.mp3',
+    websiteUrl: 'https://www.radioclassique.fr',
+    genres: ['classical'],
+    country: 'FR',
+    adapter: 'radioclassique',
+    adapterConfig: {},
+  },
+  {
+    id: 'radio-nova',
+    name: 'Radio Nova',
+    streamUrl: 'https://novazz.ice.infomaniak.ch/novazz-128.mp3',
+    websiteUrl: 'https://www.nova.fr',
+    genres: ['eclectic', 'world', 'groove'],
+    country: 'FR',
+    adapter: 'nova',
+    adapterConfig: {
+      code: 'radio-nova',
+    },
+  },
+  {
     id: 'rts-couleur-3',
     name: 'RTS Couleur 3',
     streamUrl: 'https://stxt-audiostreaming.akamaized.net/hls/live/2117380/couleur3/master.m3u8',
     websiteUrl: 'https://www.rts.ch/rts-couleur3',
     genres: ['indie', 'alternative', 'rock', 'eclectic'],
     country: 'CH',
+    adapter: 'rts',
+    adapterConfig: {
+      channel: 'rts-couleur3',
+    },
   },
   {
     id: 'tsfjazz',

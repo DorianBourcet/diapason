@@ -1,24 +1,54 @@
 import type { Station, TrackMetadata } from '../types'
 import { proxyUrl } from '../utils/proxyUrl'
 
-const STATION_PAYLOADS: Record<string, string> = {
-  fip: 'W3siYnJhbmROYW1lIjoxLCJ2ZXJzaW9uIjoyfSwiZmlwIiwiMjAyNi0wNS0xMiJd',
-  fipJazz: 'W3siYnJhbmROYW1lIjoxLCJ2ZXJzaW9uIjoyfSwiZmlwX2phenoiLCIyMDI2LTA1LTEyIl0',
-  fipRock: 'W3siYnJhbmROYW1lIjoxfSwiZmlwX3JvY2siXQ',
-  francemusique: 'W3siYnJhbmROYW1lIjoxfSwiZnJhbmNlbXVzaXF1ZSJd',
-  francemusiqueLaJazz: 'W3siYnJhbmROYW1lIjoxfSwiZnJhbmNlbXVzaXF1ZV9sYV9qYXp6Il0',
-  francemusiquePianoZen: 'W3siYnJhbmROYW1lIjoxfSwiZnJhbmNlbXVzaXF1ZV9waWFub196ZW4iXQ',
+// Maps each station's `adapterConfig.stationId` to the slug expected by the
+// Radio France getLive API.
+const STATION_SLUGS: Record<string, string> = {
+  fip: 'fip',
+  fipRock: 'fip_rock',
+  fipJazz: 'fip_jazz',
+  fipGroove: 'fip_groove',
+  fipPop: 'fip_pop',
+  fipElectro: 'fip_electro',
+  fipReggae: 'fip_reggae',
+  fipWorld: 'fip_world',
+  fipNouveautes: 'fip_nouveautes',
+  fipHiphop: 'fip_hiphop',
+  fipMetal: 'fip_metal',
+  fipSacreFrancais: 'fip_sacre_francais',
+  fipCultes: 'fip_cultes',
+  francemusique: 'francemusique',
+  francemusiqueClassiqueEasy: 'francemusique_classique_easy',
+  francemusiqueClassiqueLove: 'francemusique_classique_love',
+  francemusiquePianoZen: 'francemusique_piano_zen',
+  francemusiqueBaroque: 'francemusique_baroque',
+  francemusiqueFilms: 'francemusique_evenementielle',
+  francemusiqueClassiquePlus: 'francemusique_classique_plus',
+  francemusiqueOpera: 'francemusique_opera',
+  francemusiqueConcertsRf: 'francemusique_concert_rf',
+  francemusiqueLaJazz: 'francemusique_la_jazz',
+  francemusiqueLaContemporaine: 'francemusique_la_contemporaine',
+  francemusiqueOcora: 'francemusique_ocora_monde',
+}
+
+// The getLive endpoint expects a base64url-encoded payload of the shape
+// [{ brandName, version }, slug, "YYYY-MM-DD"]. Any recent date is accepted.
+function buildPayload(slug: string): string {
+  const date = new Date().toISOString().slice(0, 10)
+  return btoa(JSON.stringify([{ brandName: 1, version: 2 }, slug, date])).replace(/=+$/, '')
 }
 
 export async function fetchMetadata(station: Station): Promise<TrackMetadata> {
   if (!station.adapterConfig) {
     throw new Error(`Missing adapterConfig for station: ${station.id}`)
   }
-  const payload = STATION_PAYLOADS[station.adapterConfig.stationId]
+  const slug = STATION_SLUGS[station.adapterConfig.stationId]
 
-  if (payload === undefined) {
+  if (slug === undefined) {
     throw new Error(`Unknown Radio France station: ${station.adapterConfig.stationId}`)
   }
+
+  const payload = buildPayload(slug)
 
   const response = await fetch(
     proxyUrl(`https://www.radiofrance.fr/_app/remote/di23tz/getLive?payload=${payload}`),

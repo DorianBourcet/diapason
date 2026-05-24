@@ -163,7 +163,9 @@ export function AudioPlayer() {
       const elapsed = Date.now() / 1000 - currentTrack.startedAt
       navigator.mediaSession.setPositionState({
         duration: currentTrack.duration,
-        position: Math.min(elapsed, currentTrack.duration),
+        // Clamp to [0, duration]: setPositionState throws on out-of-range values,
+        // which would otherwise crash the app on a stale or skewed start time.
+        position: Math.min(Math.max(elapsed, 0), currentTrack.duration),
         playbackRate: 1,
       })
     }

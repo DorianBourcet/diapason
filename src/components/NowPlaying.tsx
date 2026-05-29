@@ -14,6 +14,9 @@ export function NowPlaying() {
 
   const coverSize = { width: 'min(320px, 50vh)', height: 'min(320px, 50vh)' }
 
+  const stationName = currentStation?.name ?? ''
+  const hasMetadata = Boolean(currentTrack?.title || currentTrack?.artist || currentTrack?.album)
+
   // Playing
   if (status === 'playing') {
     return (
@@ -37,14 +40,11 @@ export function NowPlaying() {
 
         <div className="flex flex-col items-center gap-1 w-full overflow-hidden min-h-20">
           <MarqueeText
-            text={currentTrack?.title ?? ''}
+            text={currentTrack?.title ?? (hasMetadata ? '' : stationName)}
             className="text-text font-light text-lg leading-snug lowercase w-full text-center"
           />
           <MarqueeText
-            text={
-              currentTrack?.artist ??
-              (currentTrack?.title || currentTrack?.album ? '' : (currentStation?.name ?? ''))
-            }
+            text={currentTrack?.artist ?? (currentTrack?.album ? '' : stationName)}
             className="text-text-muted text-xs tracking-widest uppercase w-full text-center"
           />
           {currentTrack?.album && (

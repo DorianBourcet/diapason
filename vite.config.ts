@@ -36,11 +36,13 @@ export default defineConfig({
             port: port ? Number(port) : 443,
             path: `${pathname}${search}`,
             method: req.method,
-            headers: { 'Content-Type': 'application/json' },
           }
 
           const request = https.request(options, (response) => {
-            res.setHeader('Content-Type', 'application/json')
+            if (response.headers['content-type']) {
+              res.setHeader('Content-Type', response.headers['content-type'])
+            }
+            res.statusCode = response.statusCode ?? 200
             response.pipe(res)
           })
 

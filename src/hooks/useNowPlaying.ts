@@ -8,6 +8,8 @@ const SIXTY_SECONDS_INTERVAL = 60000
 const THIRTY_SECONDS_INTERVAL = 30000
 const ERROR_BACKOFF_CAP = 5 * 60 * 1000
 const ERROR_TOAST_THRESHOLD = 3
+const REFRESH_IN_MIN_INTERVAL = 10000
+const REFRESH_IN_MAX_INTERVAL = 120000
 
 async function fetchMetadata(station: Station): Promise<TrackMetadata | null> {
   if (!station.adapter) return null
@@ -23,20 +25,30 @@ function normalizeTrack(track: TrackMetadata | null): TrackMetadata {
 }
 
 function getNextPollDelay(track: TrackMetadata): number {
-  if (!track.startedAt || !track.duration) return SIXTY_SECONDS_INTERVAL
+  const endDelay =
+    track.startedAt && track.duration
+      ? (track.startedAt + track.duration + 1 - Date.now() / 1000) * 1000
+      : null
 
-  const now = Date.now() / 1000
-  const endsAt = track.startedAt + track.duration + 5
-  const delay = (endsAt - now) * 1000
-  if (delay <= 0) return THIRTY_SECONDS_INTERVAL
+  if (track.refreshIn != null) {
+    const target =
+      endDelay != null && endDelay > 0 ? Math.min(track.refreshIn, endDelay) : track.refreshIn
+    return Math.min(Math.max(target, REFRESH_IN_MIN_INTERVAL), REFRESH_IN_MAX_INTERVAL)
+  }
 
-  return Math.max(delay, THIRTY_SECONDS_INTERVAL)
+  if (endDelay != null) {
+    if (endDelay <= 0) return THIRTY_SECONDS_INTERVAL
+    return endDelay
+  }
+
+  return SIXTY_SECONDS_INTERVAL
 }
 
 export function useNowPlaying() {
   const currentStation = usePlayerStore((s) => s.currentStation)
   const status = usePlayerStore((s) => s.status)
   const setCurrentTrack = usePlayerStore((s) => s.setCurrentTrack)
+  const setMetadataStatus = usePlayerStore((s) => s.setMetadataStatus)
 
   const setErrorMessage = usePlayerStore((s) => s.setErrorMessage)
   const stationId = currentStation?.id
@@ -49,6 +61,13 @@ export function useNowPlaying() {
     }
 
     const station = currentStation
+
+    if (!station.adapter) {
+      setCurrentTrack(null)
+      setMetadataStatus('unavailable')
+      return
+    }
+
     let cancelled = false
     let timeoutId: ReturnType<typeof setTimeout> | null = null
     let consecutiveFailures = 0
@@ -64,6 +83,7 @@ export function useNowPlaying() {
         if (cached) {
           if (cancelled) return
           setCurrentTrack(cached)
+          setMetadataStatus('ready')
           schedule(getNextPollDelay(cached))
           return
         }
@@ -78,12 +98,14 @@ export function useNowPlaying() {
           img.src = track.coverUrl
         }
         setCurrentTrack(track)
+        setMetadataStatus('ready')
         metadataCache.set(station.id, track)
         consecutiveFailures = 0
 
         schedule(getNextPollDelay(track))
       } catch (error) {
         if (cancelled) return
+        setMetadataStatus('unavailable')
         consecutiveFailures += 1
         console.error(`Error fetching metadata (attempt ${consecutiveFailures}):`, error)
         if (consecutiveFailures === ERROR_TOAST_THRESHOLD) {
@@ -99,10 +121,20 @@ export function useNowPlaying() {
 
     tick()
 
+    const revalidate = () => {
+      if (cancelled || document.visibilityState !== 'visible') return
+      if (timeoutId) clearTimeout(timeoutId)
+      tick()
+    }
+    document.addEventListener('visibilitychange', revalidate)
+    window.addEventListener('online', revalidate)
+
     return () => {
       cancelled = true
       if (timeoutId) clearTimeout(timeoutId)
+      document.removeEventListener('visibilitychange', revalidate)
+      window.removeEventListener('online', revalidate)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shouldPoll, stationId, setCurrentTrack, setErrorMessage])
+  }, [shouldPoll, stationId, setCurrentTrack, setMetadataStatus, setErrorMessage])
 }

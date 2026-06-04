@@ -1,10 +1,18 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Station, TrackMetadata, PlayerState, Theme, SortOrder } from '../types'
+import type {
+  Station,
+  TrackMetadata,
+  PlayerState,
+  Theme,
+  SortOrder,
+  MetadataStatus,
+} from '../types'
 
 interface PlayerActions {
   setCurrentStation: (station: Station | null) => void
   setCurrentTrack: (track: TrackMetadata | null) => void
+  setMetadataStatus: (status: MetadataStatus) => void
   setVolume: (volume: number) => void
   toggleMute: () => void
   selectStation: (station: Station) => void
@@ -46,6 +54,7 @@ export const usePlayerStore = create<PlayerStore>()(
       currentStation: null,
       currentTrack: null,
       status: 'stopped',
+      metadataStatus: 'unavailable' as MetadataStatus,
       volume: 50,
       muted: false,
       previousVolume: 50,
@@ -60,6 +69,7 @@ export const usePlayerStore = create<PlayerStore>()(
 
       setCurrentStation: (station) => set({ currentStation: station }),
       setCurrentTrack: (track) => set({ currentTrack: track }),
+      setMetadataStatus: (status) => set({ metadataStatus: status }),
       setVolume: (volume) => set({ volume, muted: volume === 0 }),
       toggleMute: () => {
         const { muted, volume, previousVolume } = get()
@@ -78,14 +88,24 @@ export const usePlayerStore = create<PlayerStore>()(
         if (station.id === currentStation?.id && (status === 'playing' || status === 'loading')) {
           return
         }
-        set({ currentStation: station, status: 'loading', currentTrack: null, errorMessage: null })
+        set({
+          currentStation: station,
+          status: 'loading',
+          currentTrack: null,
+          metadataStatus: station.adapter ? 'pending' : 'unavailable',
+          errorMessage: null,
+        })
       },
 
       play: () => {
         const { status, currentStation } = get()
         if (!currentStation) return
         if (status === 'playing' || status === 'loading') return
-        set({ status: 'loading', errorMessage: null })
+        set({
+          status: 'loading',
+          metadataStatus: currentStation.adapter ? 'pending' : 'unavailable',
+          errorMessage: null,
+        })
       },
       stop: () => set({ status: 'stopped' }),
       reportPlaying: () => set({ status: 'playing' }),

@@ -1,47 +1,85 @@
 import { useEffect, useRef, useState } from 'react'
 import { usePlayerStore } from '../store/playerStore'
-import { VinylPlaceholder } from './VinylPlaceholder'
+import { StationNameCover } from './StationNameCover'
 import { AntennaPlaceholder } from './AntennaPlaceholder'
 import { MarqueeText } from './MarqueeText'
 
+const METADATA_GRACE_MS = 2000
+
 export function NowPlaying() {
-  const { currentStation, currentTrack, status } = usePlayerStore()
+  const { currentStation, currentTrack, status, metadataStatus } = usePlayerStore()
   const [imageLoadError, setImageLoadError] = useState(false)
+  const [loadedCoverUrl, setLoadedCoverUrl] = useState<string | null>(null)
+  const [graceExpired, setGraceExpired] = useState(false)
 
   useEffect(() => {
     setImageLoadError(false)
   }, [currentTrack])
+
+  useEffect(() => {
+    if (status !== 'playing' || metadataStatus !== 'pending') {
+      setGraceExpired(false)
+      return
+    }
+    const timer = setTimeout(() => setGraceExpired(true), METADATA_GRACE_MS)
+    return () => clearTimeout(timer)
+  }, [status, metadataStatus, currentStation?.id])
 
   const coverSize = { width: 'min(320px, 50vh)', height: 'min(320px, 50vh)' }
 
   const stationName = currentStation?.name ?? ''
   const hasMetadata = Boolean(currentTrack?.title || currentTrack?.artist || currentTrack?.album)
 
+  const coverUrl = currentTrack?.coverUrl
+  const coverReady = coverUrl != null && loadedCoverUrl === coverUrl
+
+  const showSkeleton =
+    status === 'loading' || (status === 'playing' && metadataStatus === 'pending' && !graceExpired)
+
+  if (showSkeleton) {
+    return (
+      <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8 min-h-0 animate-pulse">
+        <div className="rounded-lg bg-bg-elevated shrink-0" style={coverSize} />
+        <div className="flex flex-col items-center gap-3 w-full min-h-20">
+          <div className="h-4 rounded bg-bg-elevated w-2/3" />
+          <div className="h-3 rounded bg-bg-elevated w-1/3" />
+        </div>
+      </div>
+    )
+  }
+
   // Playing
   if (status === 'playing') {
     return (
       <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8 min-h-0">
         <div
-          className="rounded-lg shadow-2xl overflow-hidden bg-bg-elevated shrink-0"
+          className="relative rounded-lg shadow-2xl overflow-hidden bg-bg-elevated shrink-0"
           style={coverSize}
         >
-          {currentTrack?.coverUrl && !imageLoadError ? (
-            <img
-              src={currentTrack.coverUrl}
-              alt={`Pochette de ${currentTrack?.title}`}
-              className="w-full h-full object-cover"
-              onError={() => setImageLoadError(true)}
-              onLoad={() => setImageLoadError(false)}
-            />
+          {coverUrl && !imageLoadError ? (
+            <>
+              <img
+                key={coverUrl}
+                ref={(el) => {
+                  if (el?.complete && el.naturalWidth > 0) setLoadedCoverUrl(coverUrl)
+                }}
+                src={coverUrl}
+                alt={`Pochette de ${currentTrack?.title}`}
+                className={`w-full h-full object-cover ${coverReady ? '' : 'opacity-0'}`}
+                onError={() => setImageLoadError(true)}
+                onLoad={() => setLoadedCoverUrl(coverUrl)}
+              />
+              {!coverReady && <div className="absolute inset-0 bg-bg-elevated animate-pulse" />}
+            </>
           ) : (
-            <VinylPlaceholder />
+            <StationNameCover name={stationName} />
           )}
         </div>
 
         <div className="flex flex-col items-center gap-1 w-full overflow-hidden min-h-20">
           <MarqueeText
             text={currentTrack?.title ?? (hasMetadata ? '' : stationName)}
-            className="text-text font-light text-lg leading-snug lowercase w-full text-center"
+            className="text-text font-light text-lg leading-snug w-full text-center"
           />
           <MarqueeText
             text={currentTrack?.artist ?? (currentTrack?.album ? '' : stationName)}
@@ -58,28 +96,12 @@ export function NowPlaying() {
     )
   }
 
-  // Loading station
-  if (status === 'loading') {
-    return (
-      <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8 min-h-0 animate-pulse">
-        <div className="rounded-lg bg-bg-elevated shrink-0" style={coverSize} />
-        <div className="flex flex-col items-center gap-3 w-full min-h-20">
-          <div className="h-4 rounded bg-bg-elevated w-2/3" />
-          <div className="h-3 rounded bg-bg-elevated w-1/3" />
-        </div>
-      </div>
-    )
-  }
-
   // No playing station
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8 min-h-0">
       <div className="opacity-30" style={coverSize}>
         <AntennaPlaceholder />
       </div>
-      <p className="text-xs text-text-muted tracking-widest">
-        {currentStation ? currentStation.name.toUpperCase() : 'AUCUNE STATION SÉLECTIONNÉE'}
-      </p>
     </div>
   )
 }

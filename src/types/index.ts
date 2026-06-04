@@ -20,9 +20,12 @@ export interface TrackMetadata {
   coverUrl?: string
   startedAt?: number
   duration?: number
+  refreshIn?: number
 }
 
 export type PlaybackStatus = 'playing' | 'stopped' | 'loading'
+
+export type MetadataStatus = 'pending' | 'ready' | 'unavailable'
 
 export type Theme = 'system' | 'light' | 'dark'
 
@@ -30,6 +33,7 @@ export interface PlayerState {
   currentStation: Station | null
   currentTrack: TrackMetadata | null
   status: PlaybackStatus
+  metadataStatus: MetadataStatus
   volume: number
   theme: Theme
 }

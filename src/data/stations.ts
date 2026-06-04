@@ -59,7 +59,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fip',
+      liveId: '7',
     },
   },
   {
@@ -71,7 +71,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipCultes',
+      liveId: '709',
     },
   },
   {
@@ -83,7 +83,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipElectro',
+      liveId: '74',
     },
   },
   {
@@ -95,7 +95,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipGroove',
+      liveId: '66',
     },
   },
   {
@@ -107,7 +107,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipHiphop',
+      liveId: '95',
     },
   },
   {
@@ -119,7 +119,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipJazz',
+      liveId: '65',
     },
   },
   {
@@ -131,7 +131,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipMetal',
+      liveId: '77',
     },
   },
   {
@@ -143,7 +143,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipWorld',
+      liveId: '69',
     },
   },
   {
@@ -155,7 +155,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipNouveautes',
+      liveId: '70',
     },
   },
   {
@@ -167,7 +167,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipPop',
+      liveId: '78',
     },
   },
   {
@@ -179,7 +179,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipReggae',
+      liveId: '71',
     },
   },
   {
@@ -191,7 +191,7 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipRock',
+      liveId: '64',
     },
   },
   {
@@ -204,7 +204,33 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'fipSacreFrancais',
+      liveId: '96',
+    },
+  },
+  {
+    id: 'franceculture',
+    name: 'France Culture',
+    streamUrl: 'https://stream.radiofrance.fr/franceculture/franceculture.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/franceculture',
+    genres: ['talk', 'culture', 'ideas'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      liveId: '5',
+      visual: 'transistor_culture_player',
+    },
+  },
+  {
+    id: 'franceinter',
+    name: 'France Inter',
+    streamUrl: 'https://stream.radiofrance.fr/franceinter/franceinter.m3u8?id=radiofrance',
+    websiteUrl: 'https://www.radiofrance.fr/franceinter',
+    genres: ['talk', 'news', 'generalist'],
+    country: 'FR',
+    adapter: 'radiofrance',
+    adapterConfig: {
+      liveId: '1',
+      visual: 'transistor_inter_player',
     },
   },
   {
@@ -216,7 +242,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusique',
+      liveId: '4',
+      visual: 'musique_player',
     },
   },
   {
@@ -229,7 +256,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiqueBaroque',
+      liveId: '408',
+      visual: 'transistor_musical_player',
     },
   },
   {
@@ -242,7 +270,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiqueClassiqueEasy',
+      liveId: '401',
+      visual: 'transistor_musical_player',
     },
   },
   {
@@ -255,7 +284,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiqueClassiqueLove',
+      liveId: '411',
+      visual: 'transistor_musical_player',
     },
   },
   {
@@ -268,7 +298,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiqueClassiquePlus',
+      liveId: '402',
+      visual: 'transistor_musical_player',
     },
   },
   {
@@ -281,7 +312,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiqueConcertsRf',
+      liveId: '403',
+      visual: 'transistor_musical_player',
     },
   },
   {
@@ -294,7 +326,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiqueLaContemporaine',
+      liveId: '406',
+      visual: 'transistor_musical_player',
     },
   },
   {
@@ -307,7 +340,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiqueFilms',
+      liveId: '407',
+      visual: 'transistor_musical_player',
     },
   },
   {
@@ -320,7 +354,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiqueLaJazz',
+      liveId: '405',
+      visual: 'transistor_musical_player',
     },
   },
   {
@@ -333,7 +368,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiqueOcora',
+      liveId: '404',
+      visual: 'transistor_musical_player',
     },
   },
   {
@@ -346,7 +382,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiqueOpera',
+      liveId: '409',
+      visual: 'transistor_musical_player',
     },
   },
   {
@@ -359,7 +396,8 @@ export const stations: Station[] = [
     country: 'FR',
     adapter: 'radiofrance',
     adapterConfig: {
-      stationId: 'francemusiquePianoZen',
+      liveId: '410',
+      visual: 'transistor_musical_player',
     },
   },
   {

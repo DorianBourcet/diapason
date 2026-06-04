@@ -4,12 +4,12 @@ import { usePlayerStore } from '../store/playerStore'
 import { useSleepTimer } from '../hooks/useSleepTimer'
 
 const TIMER_OPTIONS = [
-  { label: '60 min', seconds: 60 * 60 },
-  { label: '45 min', seconds: 45 * 60 },
-  { label: '30 min', seconds: 30 * 60 },
-  { label: '15 min', seconds: 15 * 60 },
-  { label: '10 min', seconds: 10 * 60 },
-  { label: '5 min', seconds: 5 * 60 },
+  { label: 'Dans 60 min', seconds: 60 * 60 },
+  { label: 'Dans 45 min', seconds: 45 * 60 },
+  { label: 'Dans 30 min', seconds: 30 * 60 },
+  { label: 'Dans 15 min', seconds: 15 * 60 },
+  { label: 'Dans 10 min', seconds: 10 * 60 },
+  { label: 'Dans 5 min', seconds: 5 * 60 },
 ]
 
 function formatTime(seconds: number): string {
@@ -86,7 +86,7 @@ export function SleepTimerControl() {
               : 'text-text-muted opacity-40 cursor-not-allowed'
           }`}
         >
-          Fin du titre
+          À la fin du titre
         </button>
 
         {/* Cancel — only when a timer is active */}

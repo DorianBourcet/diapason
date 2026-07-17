@@ -35,7 +35,7 @@ export function StationFilters({ allGenres, allCountries }: StationFiltersProps)
           className="flex items-center gap-1 ml-auto h-10 md:h-auto px-1 text-[11px] md:text-[10px] tracking-widest text-text-muted hover:text-text transition-colors cursor-pointer"
         >
           {activeCount > 0 && !expanded && <span className="text-accent">{activeCount}</span>}
-          <span>filtres</span>
+          <span>Filtres</span>
           {expanded ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
         </button>
 

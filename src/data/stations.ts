@@ -44,11 +44,7 @@ export const stations: Station[] = [
     websiteUrl: 'https://www.rtbf.be/radio/liveradio/classic21',
     genres: ['rock', 'classic-rock', 'pop'],
     country: 'BE',
-    adapter: 'radioplayer',
-    adapterConfig: {
-      prefix: '056',
-      rpId: '2',
-    },
+    adapter: 'classic21',
   },
   {
     id: 'fip',

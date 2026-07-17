@@ -8,6 +8,8 @@ interface MarqueeTextProps {
   delay?: number // delay in seconds at each iteration
 }
 
+const SCROLL_EASING = 'cubic-bezier(0.10, 0, 0.90, 1)'
+
 interface ScrollState {
   offset: number
   totalDuration: number
@@ -53,8 +55,12 @@ export function MarqueeText({
     if (!container || !textEl) return
 
     function measure() {
-      const textWidth = textEl!.getBoundingClientRect().width
-      const containerWidth = container!.getBoundingClientRect().width
+      const textEl = textRef.current
+      const container = containerRef.current
+      if (!textEl || !container) return
+
+      const textWidth = textEl.getBoundingClientRect().width
+      const containerWidth = container.getBoundingClientRect().width
       const state = computeScrollState(textWidth, containerWidth, gap, speed, delay)
 
       if (state) {
@@ -65,8 +71,9 @@ export function MarqueeText({
         }
         styleElRef.current.textContent = `
           @keyframes ${animNameRef.current} {
-            0%, ${state.pausePercent}% { transform: translateX(0); }
-            100%                       { transform: translateX(-${state.offset}px); }
+            0%                     { transform: translateX(0); }
+            ${state.pausePercent}% { transform: translateX(0); animation-timing-function: ${SCROLL_EASING}; }
+            100%                   { transform: translateX(-${state.offset}px); }
           }
         `
       } else {

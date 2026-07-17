@@ -19,13 +19,13 @@ export function PlayStopButton() {
     <button
       onClick={handlePlayStop}
       aria-label={status !== 'playing' ? 'Lecture' : 'Stop'}
-      className="w-11 h-11 md:w-8 md:h-8 shrink-0 rounded-full border border-border flex items-center justify-center hover:border-accent active:border-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      className="w-11 h-11 md:w-12 md:h-12 shrink-0 rounded-full border border-border flex items-center justify-center hover:border-accent active:border-accent cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       disabled={!currentStation}
     >
       {isLoading ? (
         <svg
           aria-hidden="true"
-          className="w-4 h-4 animate-spin text-text opacity-60"
+          className="w-5 h-5 animate-spin text-text opacity-60"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -36,9 +36,9 @@ export function PlayStopButton() {
           />
         </svg>
       ) : isPlaying ? (
-        <Square size={14} fill="currentColor" />
+        <Square size={20} fill="currentColor" />
       ) : (
-        <Play size={14} fill="currentColor" />
+        <Play size={20} fill="currentColor" />
       )}
     </button>
   )

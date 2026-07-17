@@ -25,7 +25,10 @@ export function NowPlaying() {
     return () => clearTimeout(timer)
   }, [status, metadataStatus, currentStation?.id])
 
-  const coverSize = { width: 'min(320px, 50vh)', height: 'min(320px, 50vh)' }
+  const coverSize = {
+    width: 'min(500px, calc(100vh - 200px), calc(100vw - 4rem))',
+    height: 'min(500px, calc(100vh - 200px), calc(100vw - 4rem))',
+  }
 
   const stationName = currentStation?.name ?? ''
   const hasMetadata = Boolean(currentTrack?.title || currentTrack?.artist || currentTrack?.album)
@@ -38,7 +41,7 @@ export function NowPlaying() {
 
   if (showSkeleton) {
     return (
-      <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8 min-h-0 animate-pulse">
+      <div className="flex flex-col items-center gap-6 w-full max-w-xl px-8 min-h-0 animate-pulse">
         <div className="rounded-lg bg-bg-elevated shrink-0" style={coverSize} />
         <div className="flex flex-col items-center gap-3 w-full min-h-20">
           <div className="h-4 rounded bg-bg-elevated w-2/3" />
@@ -51,9 +54,9 @@ export function NowPlaying() {
   // Playing
   if (status === 'playing') {
     return (
-      <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8 min-h-0">
+      <div className="flex flex-col items-center gap-6 w-full max-w-xl px-8 min-h-0">
         <div
-          className="relative rounded-lg shadow-2xl overflow-hidden bg-bg-elevated shrink-0"
+          className="relative rounded-lg shadow-[var(--cover-shadow)] overflow-hidden bg-bg-elevated shrink-0"
           style={coverSize}
         >
           {coverUrl && !imageLoadError ? (
@@ -98,7 +101,7 @@ export function NowPlaying() {
 
   // No playing station
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-sm px-8 min-h-0">
+    <div className="flex flex-col items-center gap-6 w-full max-w-xl px-8 min-h-0">
       <div className="opacity-30" style={coverSize}>
         <AntennaPlaceholder />
       </div>
@@ -125,7 +128,7 @@ function ProgressBar({ startedAt, duration }: { startedAt: number; duration: num
   useEffect(() => {
     mountElapsed.current = Date.now() / 1000 - startedAt
     setPhase('start')
-    const raf = requestAnimationFrame(() => setPhase('catchup'))
+    const raf = requestAnimationFrame(() => setPhase((p) => (p === 'start' ? 'catchup' : p)))
     const timer = setTimeout(() => {
       linearDelayRef.current = Date.now() / 1000 - startedAt
       setPhase('linear')

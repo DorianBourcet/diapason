@@ -108,7 +108,7 @@ export function SleepTimerControl() {
         onClick={() => isPlaying && setMenuOpen((v) => !v)}
         disabled={!isPlaying}
         aria-label="Minuteur de mise en veille"
-        className={`flex items-center gap-1.5 h-11 md:h-8 px-1 transition-colors ${
+        className={`flex items-center gap-1.5 h-11 md:h-10 px-1.5 transition-colors ${
           !isPlaying
             ? 'text-text-muted opacity-30 cursor-not-allowed'
             : isActive
@@ -116,7 +116,7 @@ export function SleepTimerControl() {
               : 'text-text-muted hover:text-text cursor-pointer'
         }`}
       >
-        <BedDouble size={16} />
+        <BedDouble size={18} />
         {isActive && secondsRemaining !== null && (
           <span className="text-xs tabular-nums font-medium">{formatTime(secondsRemaining)}</span>
         )}

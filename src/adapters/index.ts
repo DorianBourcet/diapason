@@ -11,6 +11,7 @@ import * as rts from './rts'
 import * as jazzradio from './jazzradio'
 import * as radioplayer from './radioplayer'
 import * as ouifm from './ouifm'
+import * as classic21 from './classic21'
 
 export interface Adapter {
   fetchMetadata(station: Station): Promise<TrackMetadata>
@@ -29,6 +30,7 @@ export const adapters = {
   jazzradio,
   radioplayer,
   ouifm,
+  classic21,
 } satisfies Record<string, Adapter>
 
 export type AdapterName = keyof typeof adapters

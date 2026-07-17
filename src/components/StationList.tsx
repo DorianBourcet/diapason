@@ -36,41 +36,40 @@ export function StationList({
           <li key={station.id} className="group">
             <div
               className={`
-                flex items-center gap-2 w-full px-3 py-3 md:py-2.5 rounded-md text-sm transition-colors relative
+                flex items-center gap-2 w-full px-1 rounded-md text-sm transition-colors relative
+                has-[[data-favorite]:hover]:bg-transparent
                 ${isActive ? 'text-text' : 'text-text-muted hover:text-text hover:bg-accent-muted'}
               `}
             >
               {isActive && (
                 <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-accent rounded-full" />
               )}
-
               <button
                 onClick={() => handleSelect(station)}
                 aria-pressed={isActive}
-                className="flex-1 min-w-0 text-left cursor-pointer"
+                className="flex flex-1 min-w-0 items-center gap-2 px-2 py-3 md:py-2.5 rounded-md text-left cursor-pointer"
               >
-                {station.name}
-              </button>
-
-              <div className="shrink-0 flex items-center gap-0.5">
-                <span className="text-[10px] tracking-widest text-text-muted bg-bg-elevated border border-border rounded px-1 py-px">
+                <span className="shrink-0 text-[10px] tracking-widest text-text-muted bg-bg-elevated border border-border rounded px-1 py-px">
                   {station.country}
                 </span>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onToggleFavorite(station.id)
-                  }}
-                  aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-                  className={`py-3 px-2 -my-3 md:p-0 md:my-0 transition-colors focus:opacity-100 cursor-pointer ${
-                    isFavorite
-                      ? 'text-accent'
-                      : 'text-text-muted hover:text-accent md:opacity-0 md:group-hover:opacity-100'
-                  }`}
-                >
-                  <Heart size={13} fill={isFavorite ? 'currentColor' : 'none'} />
-                </button>
-              </div>
+                <span className="min-w-0 break-words line-clamp-2">{station.name}</span>
+              </button>
+
+              <button
+                data-favorite
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onToggleFavorite(station.id)
+                }}
+                aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+                className={`self-stretch aspect-square shrink-0 flex items-center justify-center rounded-md transition-colors focus:opacity-100 cursor-pointer ${
+                  isFavorite
+                    ? 'text-accent'
+                    : 'text-text-muted hover:text-accent md:opacity-0 md:group-hover:opacity-100'
+                }`}
+              >
+                <Heart size={13} fill={isFavorite ? 'currentColor' : 'none'} />
+              </button>
             </div>
           </li>
         )
